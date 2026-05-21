@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Doodhwala — Enterprise Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root{--bg:#F5EFE3;--bg-warm:#EEE5D2;--ink:#1A1410;--ink-soft:#4A3F33;--muted:#8A7F71;--line:#D9CFBC;--card:#FFFFFF;--primary:#0F5132;--primary-soft:#E6EFE8;--accent:#C8821E;--accent-soft:#FBEFD8;--rose:#B8484C;--rose-soft:#F7E1E2;--blue:#2F5D8A;--blue-soft:#E2EAF3;--purple:#6B4A8C;--purple-soft:#EDE5F2}
+*{box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
+.display{font-family:'Fraunces',serif;letter-spacing:-0.02em}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 10%,rgba(200,130,30,0.06) 0%,transparent 40%),radial-gradient(circle at 80% 90%,rgba(15,81,50,0.05) 0%,transparent 40%);pointer-events:none;z-index:0}
+.container{max-width:1500px;margin:0 auto;padding:32px 24px;position:relative;z-index:2}
+.phone{width:340px;height:730px;background:#0a0a0a;border-radius:44px;padding:10px;box-shadow:0 30px 60px -20px rgba(26,20,16,0.35),0 12px 28px -8px rgba(26,20,16,0.2);flex-shrink:0}
+.phone-screen{width:100%;height:100%;background:var(--bg);border-radius:36px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.phone-notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:88px;height:22px;background:#0a0a0a;border-radius:999px;z-index:30}
+.status-bar{height:36px;padding:0 24px 0 28px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;flex-shrink:0;z-index:5}
+.status-icons{display:flex;gap:5px;align-items:center}
+.status-icons svg{width:14px;height:14px}
+.screen-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:0;position:relative}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 18px 6px}
+.icon-btn{width:36px;height:36px;background:var(--card);border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);position:relative}
+.icon-btn:hover{background:var(--bg-warm)}
+.icon-btn .dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--rose);border-radius:50%;border:2px solid var(--card)}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(26,20,16,0.5);z-index:40;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.drawer-backdrop.open{opacity:1;pointer-events:auto}
+.drawer{position:absolute;top:0;left:0;bottom:0;width:86%;background:var(--bg);z-index:50;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column;overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+.drawer-header{padding:28px 22px 18px;background:var(--card);border-bottom:1px solid var(--line)}
+.drawer-section{padding:12px 14px}
+.drawer-label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--muted);padding:8px 8px 6px}
+.drawer-item{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:10px;cursor:pointer;transition:background 0.15s}
+.drawer-item:hover,.drawer-item.active{background:var(--card)}
+.drawer-item.active{background:var(--ink);color:var(--bg)}
+.drawer-item .icon-wrap{width:30px;height:30px;border-radius:8px;background:var(--bg-warm);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-soft)}
+.drawer-item.active .icon-wrap{background:rgba(255,255,255,0.12);color:var(--bg)}
+.drawer-item .badge{margin-left:auto;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;background:var(--rose-soft);color:var(--rose)}
+.drawer-item .label{font-size:13px;font-weight:500}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600}
+.section-title{font-family:'Fraunces',serif;font-weight:500;font-size:17px;letter-spacing:-0.02em}
+.stat-cell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat-val{font-family:'Fraunces',serif;font-weight:500;font-size:22px;letter-spacing:-0.02em;line-height:1;margin-top:4px}
+.stat-lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;color:var(--muted)}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.list-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.list-row:last-child{border-bottom:none}
+.avatar{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.greet{font-size:11px;color:var(--muted);font-weight:500}
+.greet-name{font-family:'Fraunces',serif;font-size:24px;font-weight:500;letter-spacing:-0.025em;line-height:1.1;margin-top:2px}
+.btn{padding:12px 16px;border:none;border-radius:12px;font-family:'DM Sans';font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn-dark{background:var(--ink);color:var(--bg)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink-soft)}
+.btn-block{width:100%}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp 0.3s ease forwards}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 2s ease-in-out infinite}
+.page-header{display:flex;align-items:center;gap:10px;padding:12px 14px 6px}
+.page-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;letter-spacing:-0.02em;flex:1}
+.intro{text-align:center;padding:30px 0 22px}
+.intro h1{font-family:'Fraunces',serif;font-size:clamp(34px,4.5vw,50px);font-weight:400;letter-spacing:-0.035em;line-height:1;margin:0 0 14px}
+.intro h1 em{font-style:italic;color:var(--primary);font-weight:400}
+.intro p{color:var(--ink-soft);max-width:660px;font-size:15px;line-height:1.6;margin:0 auto}
+.phones-stage{display:flex;justify-content:center;align-items:flex-start;padding:22px 0 50px;gap:28px;flex-wrap:wrap}
+.demo-label{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:14px}
+.date-input{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:'DM Sans';font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:7px 13px;border-radius:999px;font-size:11px;font-weight:600;background:var(--card);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.invoice-paper{background:#FFFCF6;border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 4px 12px rgba(26,20,16,0.06)}
+.inv-row{display:flex;justify-content:space-between;padding:6px 0;font-size:11px}
+.inv-th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+.fab{position:absolute;bottom:24px;right:18px;width:52px;height:52px;border-radius:18px;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(26,20,16,0.3);cursor:pointer;z-index:5}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const {useState} = React;
+ 
+// ============= ICONS =============
+const I = {
+  Wifi:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>,
+  Battery:(p)=><svg viewBox="0 0 24 24" fill="currentColor" {...p}><rect x="2" y="7" width="18" height="10" rx="2"/><rect x="21" y="10" width="2" height="4" rx="0.5"/></svg>,
+  Cell:(p)=><svg viewBox="0 0 24 24" fill="currentColor" {...p}><rect x="2" y="14" width="4" height="6" rx="0.5"/><rect x="8" y="10" width="4" height="10" rx="0.5"/><rect x="14" y="6" width="4" height="14" rx="0.5"/></svg>,
+  Menu:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="14" y2="13"/><line x1="4" y1="19" x2="20" y2="19"/></svg>,
+  X:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  Back:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="15 18 9 12 15 6"/></svg>,
+  Plus:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  Bell:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+  Search:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  ChevR:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="9 18 15 12 9 6"/></svg>,
+  Home:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>,
+  Users:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>,
+  Package:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>,
+  Map:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>,
+  Receipt:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>,
+  Wallet:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>,
+  TrendUp:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
+  Truck:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>,
+  Check:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="20 6 9 17 4 12"/></svg>,
+  Logout:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+  Calendar:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+  Phone:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+  Drop:(p)=><svg viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M12 2.5c-3 5-7 8.5-7 13a7 7 0 0 0 14 0c0-4.5-4-8-7-13z"/></svg>,
+  Filter:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
+  Download:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  Share:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+  Print:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>,
+  Tag:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
+  Box:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
+  Edit:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  Trash:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+  Cart:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>,
+  Heart:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+  Gift:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/></svg>,
+  Pin:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>,
+  Clock:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  Shield:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+  Store:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><line x1="2" y1="7" x2="22" y2="7"/><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/></svg>,
+  Crown:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>,
+  Mail:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+  Whats:(p)=><svg viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345m-5.446 7.443h-.016c-1.77 0-3.524-.48-5.055-1.38l-.36-.214-3.75.975 1.005-3.645-.239-.375a9.869 9.869 0 0 1-1.51-5.26c0-5.445 4.455-9.885 9.93-9.885 2.654 0 5.145 1.035 7.02 2.91 1.875 1.88 2.91 4.37 2.91 7.02 0 5.445-4.455 9.885-9.93 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652a12.062 12.062 0 0 0 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411"/></svg>,
+  Coins:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/></svg>,
+  Star:(p)=><svg viewBox="0 0 24 24" fill="currentColor" {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+  Megaphone:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m3 11 18-5v12L3 14v-3z"/></svg>,
+  Layers:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
+  Help:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+  Refresh:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>,
+  Lock:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+  Activity:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
+  Database:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>,
+  Globe:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+  CreditCard:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
+  Repeat:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>,
+  Zap:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  BarChart:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>,
+  FileText:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+  Briefcase:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+  AlertTri:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+};
+ 
+const StatusBar = () => (<div className="status-bar"><span>9:41</span><div className="status-icons"><I.Cell/><I.Wifi/><I.Battery/></div></div>);
+ 
+// ============= SHARED COMPONENTS =============
+const Drawer = ({open, onClose, role, items, currentScreen, onSelect}) => {
+  const m = {super:{n:'Platform Admin', s:'admin@doodhwala.in', t:'#1A1410', i:'PA'}, owner:{n:'Sai Dairy Farm', s:'Rajesh · Owner', t:'var(--primary)', i:'SD'}, customer:{n:'Priya Sharma', s:'+91 98765 43210', t:'var(--accent)', i:'PS'}, delivery:{n:'Ravi Kumar', s:'Route A · Sai Dairy', t:'var(--blue)', i:'RK'}}[role];
+  return (<>
+    <div className={`drawer-backdrop ${open?'open':''}`} onClick={onClose}></div>
+    <div className={`drawer ${open?'open':''}`}>
+      <div className="drawer-header">
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+          <div style={{display:'flex', gap:12, alignItems:'center'}}>
+            <div style={{width:46, height:46, borderRadius:13, background:m.t, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Fraunces', fontWeight:600, fontSize:17}}>{m.i}</div>
+            <div>
+              <div style={{fontFamily:'Fraunces', fontWeight:500, fontSize:16, letterSpacing:'-0.02em'}}>{m.n}</div>
+              <div style={{fontSize:11, color:'var(--muted)', marginTop:2}}>{m.s}</div>
+            </div>
+          </div>
+          <button className="icon-btn" onClick={onClose} style={{width:30, height:30}}><I.X style={{width:14, height:14}}/></button>
+        </div>
+        <div style={{display:'flex', gap:6, marginTop:12}}>
+          <span className="pill" style={{background:'var(--primary-soft)', color:'var(--primary)'}}>● Online</span>
+          <span className="pill" style={{background:'var(--bg-warm)', color:'var(--ink-soft)'}}>v2.1.4</span>
+        </div>
+      </div>
+      {items.map((sec,si)=>(
+        <div key={si} className="drawer-section">
+          <div className="drawer-label">{sec.label}</div>
+          {sec.items.map((it,i)=>(
+            <div key={i} className={`drawer-item ${currentScreen===it.id?'active':''}`} onClick={()=>{onSelect(it.id);onClose();}}>
+              <div className="icon-wrap">{React.cloneElement(it.icon,{style:{width:14, height:14}})}</div>
+              <span className="label">{it.label}</span>
+              {it.badge && <span className="badge">{it.badge}</span>}
+            </div>
+          ))}
+        </div>
+      ))}
+      <div style={{marginTop:'auto', padding:'14px 18px 22px', borderTop:'1px solid var(--line)'}}>
+        <div className="drawer-item" style={{color:'var(--rose)'}}>
+          <div className="icon-wrap" style={{background:'var(--rose-soft)', color:'var(--rose)'}}><I.Logout style={{width:14, height:14}}/></div>
+          <span className="label">Sign out</span>
+        </div>
+      </div>
+    </div>
+  </>);
+};
+ 
+const Login = ({onLogin, role}) => {
+  const [step, setStep] = useState('phone');
+  const m = {super:{l:'Platform Admin', t:'#1A1410'}, owner:{l:'Owner', t:'var(--primary)'}, customer:{l:'Customer', t:'var(--accent)'}, delivery:{l:'Delivery', t:'var(--blue)'}}[role];
+  return (
+    <div style={{display:'flex', flexDirection:'column', height:'100%', padding:'24px 22px 28px', justifyContent:'space-between'}}>
+      <div>
+        <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:32}}>
+          <div style={{width:30, height:30, borderRadius:9, background:m.t, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:15, height:15}}/></div>
+          <span className="display" style={{fontSize:21, fontWeight:500}}>Doodhwala</span>
+        </div>
+        {step==='phone' && (
+          <div className="fade-in">
+            <h1 className="display" style={{fontSize:28, fontWeight:500, margin:'0 0 6px', lineHeight:1.1}}>Welcome.<br/><em style={{color:m.t, fontStyle:'italic'}}>Sign in.</em></h1>
+            <p style={{color:'var(--muted)', fontSize:13, margin:'0 0 24px'}}>Same app · role auto-detected by your number.</p>
+            <label className="stat-lbl">Mobile</label>
+            <div style={{display:'flex', alignItems:'center', gap:10, background:'var(--card)', border:'1px solid var(--line)', borderRadius:12, padding:'12px 14px', marginTop:6}}>
+              <span className="mono" style={{fontSize:13, fontWeight:600}}>+91</span>
+              <div style={{width:1, height:16, background:'var(--line)'}}></div>
+              <input defaultValue="98765 43210" style={{flex:1, border:'none', background:'transparent', fontFamily:'JetBrains Mono', fontSize:13, fontWeight:600, outline:'none'}}/>
+            </div>
+            <div style={{marginTop:14, padding:11, background:'var(--bg-warm)', borderRadius:11, fontSize:11, color:'var(--ink-soft)', lineHeight:1.4, display:'flex', gap:7}}>
+              <I.Shield style={{width:13, height:13, flexShrink:0, marginTop:1, color:m.t}}/>
+              <span>Demo: OTP leads to <strong>{m.l}</strong> view.</span>
+            </div>
+          </div>
+        )}
+        {step==='otp' && (
+          <div className="fade-in">
+            <button onClick={()=>setStep('phone')} style={{background:'none', border:'none', color:'var(--muted)', fontSize:12, padding:0, marginBottom:16, cursor:'pointer'}}>← Back</button>
+            <h1 className="display" style={{fontSize:26, fontWeight:500, margin:'0 0 6px'}}>Enter <em style={{color:m.t, fontStyle:'italic'}}>4-digit code.</em></h1>
+            <p style={{color:'var(--muted)', fontSize:12, margin:'0 0 22px'}}>Sent to <span className="mono" style={{color:'var(--ink)', fontWeight:600}}>+91 98765 43210</span></p>
+            <div style={{display:'flex', gap:8}}>
+              {['1','2','3','4'].map((v,i)=><input key={i} maxLength={1} defaultValue={v} style={{flex:1, aspectRatio:'1', textAlign:'center', fontFamily:'Fraunces', fontSize:24, fontWeight:500, border:'1px solid var(--line)', background:'var(--card)', borderRadius:12, outline:'none'}}/>)}
+            </div>
+          </div>
+        )}
+      </div>
+      <div>
+        <button className="btn btn-block" style={{background:m.t, color:'#fff', padding:'14px'}} onClick={()=>step==='phone'?setStep('otp'):onLogin()}>{step==='phone'?'Send code →':'Verify & continue →'}</button>
+        <div style={{textAlign:'center', fontSize:10, color:'var(--muted)', marginTop:12}}>v2.1.4 · Terms & Privacy</div>
+      </div>
+    </div>
+  );
+};
+ 
+const PageHeader = ({title, onBack, right}) => (
+  <div className="page-header">
+    {onBack && <button className="icon-btn" onClick={onBack} style={{width:32, height:32}}><I.Back style={{width:15, height:15}}/></button>}
+    <div className="page-title">{title}</div>
+    {right}
+  </div>
+);
+const TopBar = ({onMenu, title, sub, dotted}) => (
+  <div className="topbar">
+    <button className="icon-btn" onClick={onMenu}><I.Menu style={{width:18, height:18}}/></button>
+    <div style={{textAlign:'center', flex:1}}>
+      <div style={{fontSize:11, color:'var(--muted)', fontWeight:600}}>{sub}</div>
+      <div className="display" style={{fontSize:15, fontWeight:600, lineHeight:1.1, marginTop:1}}>{title}</div>
+    </div>
+    <button className="icon-btn">{dotted && <span className="dot"></span>}<I.Bell style={{width:17, height:17}}/></button>
+  </div>
+);
+ 
+const Placeholder = ({title, onBack}) => (
+  <div>
+    <PageHeader title={title||'Section'} onBack={onBack}/>
+    <div style={{padding:40, textAlign:'center', color:'var(--muted)'}}>
+      <div style={{width:60, height:60, margin:'0 auto 14px', borderRadius:18, background:'var(--bg-warm)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Box style={{width:24, height:24}}/></div>
+      <div className="display" style={{fontSize:18, color:'var(--ink)', marginBottom:6}}>{title}</div>
+      <div style={{fontSize:12, lineHeight:1.5, maxWidth:240, margin:'0 auto'}}>This section is in the menu. Detail screen follows the same pattern — list, search, filter, detail.</div>
+    </div>
+  </div>
+);
+ 
+// ============= SUPER ADMIN =============
+const SUPER_MENU = [
+  {label:'Overview', items:[
+    {id:'home', label:'Dashboard', icon:<I.Home/>},
+    {id:'live', label:'Live activity', icon:<I.Activity/>, badge:'12'},
+    {id:'analytics', label:'Analytics', icon:<I.BarChart/>},
+  ]},
+  {label:'Platform', items:[
+    {id:'owners', label:'Owners / Businesses', icon:<I.Store/>, badge:'142'},
+    {id:'customers-all', label:'All customers', icon:<I.Users/>},
+    {id:'agents-all', label:'All delivery agents', icon:<I.Truck/>},
+  ]},
+  {label:'Revenue', items:[
+    {id:'revenue', label:'Subscription revenue', icon:<I.TrendUp/>},
+    {id:'plans', label:'Plans & pricing', icon:<I.Tag/>},
+    {id:'payouts', label:'Payouts & refunds', icon:<I.Coins/>},
+  ]},
+  {label:'System', items:[
+    {id:'payment', label:'Payment gateways', icon:<I.CreditCard/>},
+    {id:'sms', label:'SMS & OTP', icon:<I.Phone/>},
+    {id:'whatsapp', label:'WhatsApp Business', icon:<I.Whats/>},
+    {id:'flags', label:'Feature flags', icon:<I.Zap/>},
+    {id:'audit', label:'Audit logs', icon:<I.Lock/>},
+    {id:'support', label:'Support tickets', icon:<I.Help/>, badge:'18'},
+    {id:'db', label:'Database & backups', icon:<I.Database/>},
+    {id:'i18n', label:'Languages & regions', icon:<I.Globe/>},
+  ]},
+];
+ 
+const SuperAdmin = () => {
+  const [screen, setScreen] = useState('home');
+  const [drawer, setDrawer] = useState(false);
+  return (<>
+    <StatusBar/>
+    <Drawer open={drawer} onClose={()=>setDrawer(false)} role="super" items={SUPER_MENU} currentScreen={screen} onSelect={setScreen}/>
+    <div className="screen-body">
+      <TopBar onMenu={()=>setDrawer(true)} sub="Platform" title="Doodhwala HQ" dotted/>
+      {screen==='home' && <SuperHome/>}
+      {screen==='owners' && <SuperOwners onBack={()=>setScreen('home')}/>}
+      {screen==='revenue' && <SuperRevenue onBack={()=>setScreen('home')}/>}
+      {screen==='audit' && <SuperAudit onBack={()=>setScreen('home')}/>}
+      {!['home','owners','revenue','audit'].includes(screen) && <Placeholder title={SUPER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={()=>setScreen('home')}/>}
+    </div>
+  </>);
+};
+const SuperHome = () => (
+  <div style={{padding:'4px 16px 24px'}}>
+    <div style={{margin:'8px 0 14px'}}>
+      <div className="greet">Wed, 20 May</div>
+      <div className="greet-name">Platform <em style={{color:'var(--muted)', fontStyle:'italic', fontWeight:400}}>overview.</em></div>
+    </div>
+    <div className="row-2" style={{marginBottom:10}}>
+      <div className="stat-cell" style={{background:'var(--ink)', color:'var(--bg)', borderColor:'var(--ink)'}}>
+        <div className="stat-lbl" style={{color:'rgba(245,239,227,0.6)'}}>GMV May</div>
+        <div className="stat-val">₹48.2L</div>
+        <div style={{fontSize:10, marginTop:4, color:'#9DD4A9'}}>↑ 12.4% MoM</div>
+      </div>
+      <div className="stat-cell"><div className="stat-lbl">Active owners</div><div className="stat-val">142</div><div style={{fontSize:10, color:'var(--muted)', marginTop:4}}>+8 this week</div></div>
+    </div>
+    <div className="row-2" style={{marginBottom:16}}>
+      <div className="stat-cell"><div className="stat-lbl">Customers</div><div className="stat-val">12,847</div></div>
+      <div className="stat-cell"><div className="stat-lbl">Agents</div><div className="stat-val">389</div></div>
+    </div>
+    <div className="section-title" style={{marginBottom:10}}>Revenue · 7d</div>
+    <div className="card" style={{padding:'14px 14px 10px', marginBottom:16}}>
+      <div style={{display:'flex', alignItems:'flex-end', gap:4, height:60}}>
+        {[42,58,51,68,49,76,88].map((v,i)=><div key={i} style={{flex:1, background:i===6?'var(--primary)':'var(--ink)', opacity:i===6?1:0.3+(v/130), height:`${v}%`, borderRadius:'4px 4px 0 0'}}></div>)}
+      </div>
+      <div style={{display:'flex', justifyContent:'space-between', marginTop:6, fontSize:9, color:'var(--muted)', fontWeight:500}}>{['M','T','W','T','F','S','S'].map((d,i)=><span key={i}>{d}</span>)}</div>
+    </div>
+    <div className="section-title" style={{marginBottom:8}}>Recent activity</div>
+    {[
+      {l:'Sai Dairy upgraded to Pro', t:'2m', c:'var(--primary)'},
+      {l:'New signup: Anand Milk Co', t:'18m', c:'var(--accent)'},
+      {l:'Refund · Patel Dairy', t:'1h', c:'var(--rose)'},
+      {l:'Razorpay settlement · ₹84,200', t:'3h', c:'var(--blue)'},
+    ].map((a,i)=>(
+      <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'10px 0', borderBottom:i<3?'1px solid var(--line)':'none'}}>
+        <div style={{width:30, height:30, borderRadius:9, background:`color-mix(in srgb, ${a.c} 12%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Activity style={{width:13, height:13, color:a.c}}/></div>
+        <div style={{flex:1, fontSize:12, fontWeight:500}}>{a.l}</div>
+        <span style={{fontSize:10, color:'var(--muted)'}}>{a.t}</span>
+      </div>
+    ))}
+  </div>
+);
+const SuperOwners = ({onBack}) => (
+  <div>
+    <PageHeader title="Owners" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Filter style={{width:15, height:15}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{display:'flex', gap:8, background:'var(--card)', border:'1px solid var(--line)', borderRadius:11, padding:'9px 12px', marginBottom:12}}>
+        <I.Search style={{width:14, height:14, color:'var(--muted)'}}/>
+        <input placeholder="Search by name, city, phone..." style={{flex:1, border:'none', background:'transparent', fontSize:12, outline:'none'}}/>
+      </div>
+      <div className="chips" style={{marginBottom:12}}>
+        {['All 142','Active 138','Trial 12','Pro 89','Starter 49','Blocked 4'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}
+      </div>
+      {[{n:'Sai Dairy Farm',l:'Pune',r:'₹4.2L',c:284,p:'Pro',s:'active'},{n:'Mahalakshmi Milk',l:'Hyderabad',r:'₹2.8L',c:198,p:'Pro',s:'active'},{n:'Sharma Daily Needs',l:'Jaipur',r:'₹1.1L',c:87,p:'Starter',s:'active'},{n:'Patel Dairy Co',l:'Surat',r:'₹0',c:12,p:'Trial',s:'trial'},{n:'Kumar Milk Supply',l:'Bangalore',r:'₹0',c:54,p:'Pro',s:'blocked'},{n:'Royal Dairy',l:'Indore',r:'₹78k',c:62,p:'Starter',s:'active'}].map((b,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+            <div>
+              <div style={{display:'flex', alignItems:'center', gap:6}}><span style={{fontWeight:600, fontSize:13}}>{b.n}</span><span style={{width:6, height:6, background:b.s==='active'?'var(--primary)':b.s==='trial'?'var(--accent)':'var(--rose)', borderRadius:'50%'}}></span></div>
+              <div style={{fontSize:10, color:'var(--muted)'}}>{b.l}</div>
+            </div>
+            <I.ChevR style={{width:14, height:14, color:'var(--muted)'}}/>
+          </div>
+          <div style={{display:'flex', gap:14, marginTop:10, paddingTop:9, borderTop:'1px dashed var(--line)'}}>
+            <div><div style={{fontSize:9, color:'var(--muted)', fontWeight:600, textTransform:'uppercase'}}>MTD</div><div className="mono" style={{fontSize:12, fontWeight:600}}>{b.r}</div></div>
+            <div><div style={{fontSize:9, color:'var(--muted)', fontWeight:600, textTransform:'uppercase'}}>Customers</div><div className="mono" style={{fontSize:12, fontWeight:600}}>{b.c}</div></div>
+            <div style={{marginLeft:'auto'}}><span className="pill" style={{background:'var(--bg-warm)', color:'var(--ink-soft)'}}>{b.p}</span></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+const SuperRevenue = ({onBack}) => (
+  <div>
+    <PageHeader title="Revenue" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{background:'linear-gradient(135deg, #1a1410, #2c241c)', color:'var(--bg)', borderRadius:18, padding:18, marginBottom:12}}>
+        <div className="stat-lbl" style={{color:'rgba(245,239,227,0.6)'}}>May 2026</div>
+        <div className="display" style={{fontSize:32, fontWeight:500, marginTop:4, lineHeight:1}}>₹3,84,200</div>
+        <div style={{fontSize:11, opacity:0.75, marginTop:6}}>+18% vs April</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginTop:14, paddingTop:12, borderTop:'1px solid rgba(255,255,255,0.15)'}}>
+          {[{l:'Pro',v:'₹3.12L'},{l:'Starter',v:'₹72k'},{l:'Trial→Paid',v:'34%'}].map((x,i)=><div key={i}><div style={{fontSize:9, opacity:0.6, textTransform:'uppercase', fontWeight:600}}>{x.l}</div><div className="mono" style={{fontSize:13, fontWeight:600, marginTop:2}}>{x.v}</div></div>)}
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:10}}>Recent transactions</div>
+      {[{l:'Razorpay settlement',d:'19 May',a:'+₹84,200',p:false},{l:'Refund · Patel Dairy',d:'18 May',a:'−₹4,999',p:true},{l:'Pro upgrade · Sai Dairy',d:'17 May',a:'+₹4,999',p:false},{l:'Razorpay settlement',d:'17 May',a:'+₹72,100',p:false}].map((t,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'11px 0', borderBottom:i<3?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:12, fontWeight:500}}>{t.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{t.d}</div></div>
+          <div className="mono" style={{fontWeight:600, fontSize:12, color:t.p?'var(--rose)':'var(--primary)'}}>{t.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+const SuperAudit = ({onBack}) => (
+  <div>
+    <PageHeader title="Audit logs" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Download style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['All 4,287','Logins','Permissions','Deletes','Refunds','Failed'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      {[{a:'Owner blocked',who:'admin@doodhwala.in',t:'Kumar Milk Supply',time:'2m',c:'var(--rose)'},{a:'Plan changed',who:'Rajesh',t:'Starter → Pro',time:'18m',c:'var(--primary)'},{a:'Refund issued',who:'support',t:'₹4,999',time:'1h',c:'var(--accent)'},{a:'Permission added',who:'admin',t:'accounting role',time:'4h',c:'var(--blue)'},{a:'Customer deleted',who:'Rajesh',t:'C-1923',time:'5h',c:'var(--rose)'},{a:'Flag flipped',who:'engineering',t:'whatsapp_otp=true',time:'8h',c:'var(--purple)'}].map((l,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6}}>
+          <div style={{display:'flex', alignItems:'center', gap:9}}><div style={{width:7, height:7, borderRadius:'50%', background:l.c}}></div><div style={{fontSize:12, fontWeight:600, flex:1}}>{l.a}</div><span style={{fontSize:10, color:'var(--muted)'}}>{l.time}</span></div>
+          <div style={{fontSize:10, color:'var(--muted)', marginTop:4, marginLeft:16}}>by <span style={{color:'var(--ink)', fontWeight:500}}>{l.who}</span> · {l.t}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+// ============= OWNER MENU =============
+const OWNER_MENU = [
+  {label:'Today', items:[
+    {id:'home', label:'Dashboard', icon:<I.Home/>},
+    {id:'orders-today', label:"Today's orders", icon:<I.Package/>, badge:'198'},
+    {id:'routes', label:'Routes & live track', icon:<I.Map/>},
+    {id:'cash', label:'Cash & collections', icon:<I.Coins/>},
+  ]},
+  {label:'Customers', items:[
+    {id:'customers', label:'All customers', icon:<I.Users/>, badge:'284'},
+    {id:'add-customer', label:'Add new', icon:<I.Plus/>},
+    {id:'standing', label:'Standing orders', icon:<I.Repeat/>},
+    {id:'dues', label:'Pending dues', icon:<I.AlertTri/>, badge:'12'},
+    {id:'ledgers', label:'Customer ledgers', icon:<I.FileText/>},
+  ]},
+  {label:'Catalog', items:[
+    {id:'products', label:'Products', icon:<I.Package/>, badge:'18'},
+    {id:'categories-mgmt', label:'Categories', icon:<I.Layers/>},
+    {id:'stock', label:'Stock & inventory', icon:<I.Box/>},
+    {id:'suppliers', label:'Suppliers', icon:<I.Briefcase/>},
+    {id:'wastage', label:'Wastage & spoilage', icon:<I.Trash/>},
+  ]},
+  {label:'Orders', items:[
+    {id:'all-orders', label:'All orders', icon:<I.Package/>},
+    {id:'create-order', label:'Place order', icon:<I.Plus/>},
+    {id:'bulk-orders', label:'Bulk / event orders', icon:<I.Gift/>},
+    {id:'returns', label:'Returns & refunds', icon:<I.Refresh/>},
+  ]},
+  {label:'Money', items:[
+    {id:'invoices', label:'Invoices', icon:<I.Receipt/>, badge:'New'},
+    {id:'payments', label:'Payments received', icon:<I.Wallet/>},
+    {id:'reminders', label:'Payment reminders', icon:<I.Bell/>},
+    {id:'expenses', label:'Expenses', icon:<I.Coins/>},
+    {id:'pnl', label:'Profit & loss', icon:<I.TrendUp/>},
+    {id:'gst', label:'GST & tax', icon:<I.FileText/>},
+  ]},
+  {label:'Operations', items:[
+    {id:'agents-mgmt', label:'Delivery agents', icon:<I.Truck/>},
+    {id:'attendance', label:'Attendance', icon:<I.Calendar/>},
+    {id:'salaries', label:'Salaries', icon:<I.Wallet/>},
+    {id:'staff', label:'Staff & roles', icon:<I.Shield/>},
+  ]},
+  {label:'Engage', items:[
+    {id:'promos', label:'Promotions & coupons', icon:<I.Gift/>},
+    {id:'loyalty', label:'Loyalty points', icon:<I.Star/>},
+    {id:'broadcast', label:'WhatsApp broadcast', icon:<I.Megaphone/>},
+    {id:'feedback', label:'Customer feedback', icon:<I.Star/>},
+  ]},
+  {label:'Reports', items:[
+    {id:'reports', label:'All reports', icon:<I.BarChart/>},
+    {id:'export', label:'Export center', icon:<I.Download/>},
+  ]},
+  {label:'Settings', items:[
+    {id:'business', label:'Business profile', icon:<I.Store/>},
+    {id:'bank', label:'Bank & payments', icon:<I.CreditCard/>},
+    {id:'notifs', label:'Notifications', icon:<I.Bell/>},
+    {id:'plan', label:'Subscription plan', icon:<I.Crown/>},
+    {id:'help', label:'Help & support', icon:<I.Help/>},
+  ]},
+];
+ 
+const OwnerApp = () => {
+  const [screen, setScreen] = useState('home');
+  const [drawer, setDrawer] = useState(false);
+  const back = () => setScreen('home');
+  return (<>
+    <StatusBar/>
+    <Drawer open={drawer} onClose={()=>setDrawer(false)} role="owner" items={OWNER_MENU} currentScreen={screen} onSelect={setScreen}/>
+    <div className="screen-body">
+      <TopBar onMenu={()=>setDrawer(true)} sub="Owner" title="Sai Dairy Farm" dotted/>
+      {screen==='home' && <OwnerHome onNav={setScreen}/>}
+      {screen==='customers' && <OwnerCustomers onBack={back} onOpen={()=>setScreen('customer-detail')}/>}
+      {screen==='customer-detail' && <OwnerCustomerDetail onBack={()=>setScreen('customers')}/>}
+      {screen==='products' && <OwnerProducts onBack={back}/>}
+      {screen==='invoices' && <OwnerInvoices onBack={back} onGen={()=>setScreen('invoice-gen')}/>}
+      {screen==='invoice-gen' && <OwnerInvoiceGen onBack={()=>setScreen('invoices')} onPreview={()=>setScreen('invoice-preview')}/>}
+      {screen==='invoice-preview' && <OwnerInvoicePreview onBack={()=>setScreen('invoice-gen')}/>}
+      {screen==='routes' && <OwnerRoutes onBack={back}/>}
+      {screen==='reports' && <OwnerReports onBack={back}/>}
+      {screen==='expenses' && <OwnerExpenses onBack={back}/>}
+      {screen==='dues' && <OwnerDues onBack={back}/>}
+      {screen==='create-order' && <OwnerCreateOrder onBack={back}/>}
+      {screen==='stock' && <OwnerStock onBack={back}/>}
+      {screen==='promos' && <OwnerPromos onBack={back}/>}
+      {screen==='pnl' && <OwnerPnL onBack={back}/>}
+      {!['home','customers','customer-detail','products','invoices','invoice-gen','invoice-preview','routes','reports','expenses','dues','create-order','stock','promos','pnl'].includes(screen) && <Placeholder title={OWNER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
+    </div>
+    {screen==='home' && <div className="fab" onClick={()=>setScreen('create-order')}><I.Plus style={{width:22, height:22}}/></div>}
+  </>);
+};
+ 
+const OwnerHome = ({onNav}) => (
+  <div style={{padding:'4px 16px 24px'}}>
+    <div style={{margin:'8px 0 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+      <div>
+        <div className="greet">Good morning, Rajesh</div>
+        <div className="greet-name">₹24,580 <em style={{color:'var(--primary)', fontStyle:'italic', fontWeight:400}}>today.</em></div>
+      </div>
+      <span className="pill pulse" style={{background:'var(--primary-soft)', color:'var(--primary)'}}>● Live</span>
+    </div>
+    <div style={{background:'var(--primary)', color:'#fff', borderRadius:16, padding:16, marginBottom:12, position:'relative', overflow:'hidden'}}>
+      <div style={{position:'absolute', top:-30, right:-30, width:130, height:130, background:'rgba(255,255,255,0.07)', borderRadius:'50%'}}></div>
+      <div style={{position:'relative'}}>
+        <div style={{fontSize:10, opacity:0.8, textTransform:'uppercase', fontWeight:600, letterSpacing:'0.08em'}}>20 May · Live</div>
+        <div style={{display:'flex', alignItems:'baseline', gap:8, marginTop:4}}><div className="display" style={{fontSize:28, fontWeight:500, lineHeight:1}}>198</div><div style={{fontSize:11, opacity:0.85}}>orders · 4 routes</div></div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginTop:12, paddingTop:12, borderTop:'1px solid rgba(255,255,255,0.15)'}}>
+          {[{l:'Paid',v:'₹18,200'},{l:'Pending',v:'₹6,380'},{l:'Profit',v:'₹7,840'}].map((s,i)=><div key={i}><div style={{fontSize:9, opacity:0.65, textTransform:'uppercase', fontWeight:600}}>{s.l}</div><div className="mono" style={{fontWeight:600, fontSize:12, marginTop:2}}>{s.v}</div></div>)}
+        </div>
+      </div>
+    </div>
+    <div className="row-3" style={{marginBottom:14}}>
+      {[{l:'New order',i:<I.Plus/>,c:'var(--ink)',s:'create-order'},{l:'Invoices',i:<I.Receipt/>,c:'var(--accent)',s:'invoices'},{l:'Reports',i:<I.BarChart/>,c:'var(--blue)',s:'reports'}].map((q,i)=>(
+        <button key={i} onClick={()=>onNav(q.s)} style={{background:'var(--card)', border:'1px solid var(--line)', borderRadius:13, padding:'12px 8px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:6}}>
+          <div style={{width:30, height:30, borderRadius:9, background:q.c, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center'}}>{React.cloneElement(q.i,{style:{width:15, height:15}})}</div>
+          <span style={{fontSize:11, fontWeight:600}}>{q.l}</span>
+        </button>
+      ))}
+    </div>
+    <div onClick={()=>onNav('stock')} className="card" style={{padding:12, marginBottom:14, background:'var(--rose-soft)', borderColor:'color-mix(in srgb, var(--rose) 25%, transparent)', cursor:'pointer'}}>
+      <div style={{display:'flex', alignItems:'center', gap:10}}>
+        <I.AlertTri style={{width:18, height:18, color:'var(--rose)'}}/>
+        <div style={{flex:1}}>
+          <div style={{fontSize:12, fontWeight:600}}>3 items low on stock</div>
+          <div style={{fontSize:10, color:'var(--ink-soft)', marginTop:1}}>Paneer · Butter · Ghee</div>
+        </div>
+        <I.ChevR style={{width:14, height:14, color:'var(--rose)'}}/>
+      </div>
+    </div>
+    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
+      <span className="section-title">Today's routes</span>
+      <a onClick={()=>onNav('routes')} style={{fontSize:11, color:'var(--primary)', fontWeight:600, cursor:'pointer'}}>All →</a>
+    </div>
+    {[{n:'Route A · Kothrud',cust:78,amt:9240,paid:0.78,boy:'Ravi K.',live:true},{n:'Route B · Aundh',cust:64,amt:7180,paid:0.62,boy:'Suresh M.',live:true},{n:'Route C · Baner',cust:56,amt:5940,paid:0.84,boy:'Anil P.',live:false}].map((r,i)=>(
+      <div key={i} className="card" style={{padding:12, marginBottom:7, cursor:'pointer'}} onClick={()=>onNav('routes')}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+          <div>
+            <div style={{display:'flex', alignItems:'center', gap:6}}>
+              <span style={{fontWeight:600, fontSize:13}}>{r.n}</span>
+              {r.live && <span className="pulse" style={{width:6, height:6, background:'var(--primary)', borderRadius:'50%'}}></span>}
+            </div>
+            <div style={{fontSize:10, color:'var(--muted)', marginTop:2}}>{r.cust} customers · {r.boy}</div>
+          </div>
+          <div className="mono" style={{fontSize:13, fontWeight:600}}>₹{r.amt.toLocaleString('en-IN')}</div>
+        </div>
+        <div style={{height:5, background:'var(--bg-warm)', borderRadius:999, marginTop:9, overflow:'hidden'}}><div style={{width:`${r.paid*100}%`, height:'100%', background:'var(--primary)'}}></div></div>
+        <div style={{display:'flex', justifyContent:'space-between', fontSize:9, color:'var(--muted)', marginTop:5}}><span>{Math.round(r.paid*100)}% collected</span><span>{Math.round((1-r.paid)*100)}% pending</span></div>
+      </div>
+    ))}
+  </div>
+);
+ 
+const OwnerCustomers = ({onBack, onOpen}) => (
+  <div>
+    <PageHeader title="Customers" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{display:'flex', gap:8, background:'var(--card)', border:'1px solid var(--line)', borderRadius:11, padding:'9px 12px', marginBottom:12}}>
+        <I.Search style={{width:14, height:14, color:'var(--muted)'}}/>
+        <input placeholder="Name, phone, house..." style={{flex:1, border:'none', background:'transparent', fontSize:12, outline:'none'}}/>
+      </div>
+      <div className="chips" style={{marginBottom:12}}>
+        {['All 284','Standing 198','Active 261','Paused 18','Dues 12','New 6'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}
+      </div>
+      {[{n:'Priya Sharma',r:'Route A · H-204',s:'Cow 1L daily',d:0,init:'PS',t:'Standing'},{n:'Aakash Verma',r:'Route A · H-87',s:'Buffalo 500ml daily',d:420,init:'AV',t:'Standing'},{n:'Sneha Patil',r:'Route B · F-12',s:'Cow 2L + curd',d:0,init:'SP',t:'Standing'},{n:'Vikram Reddy',r:'Route C · B-44',s:'Paneer weekly',d:280,init:'VR',t:'Weekly'},{n:'Maya Iyer',r:'Route A · H-301',s:'Cow 1L daily',d:0,init:'MI',t:'Standing'},{n:'Rohit Mehta',r:'Route A · H-156',s:'On-demand orders',d:0,init:'RM',t:'On-demand'},{n:'Anita Joshi',r:'Route B · A-22',s:'Cow 1L + Ghee',d:1240,init:'AJ',t:'Standing'}].map((c,i)=>(
+        <div key={i} className="list-row" onClick={onOpen}>
+          <div className="avatar" style={{background:'var(--bg-warm)', color:'var(--primary)'}}>{c.init}</div>
+          <div style={{flex:1, minWidth:0}}>
+            <div style={{fontWeight:600, fontSize:13}}>{c.n}</div>
+            <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{c.r} · {c.s}</div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            {c.d>0 ? <div className="mono" style={{fontSize:11, fontWeight:600, color:'var(--rose)'}}>₹{c.d}</div> : <I.Check style={{width:15, height:15, color:'var(--primary)'}}/>}
+            <div style={{fontSize:9, color:'var(--muted)', marginTop:2}}>{c.t}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerCustomerDetail = ({onBack}) => (
+  <div>
+    <PageHeader title="Customer profile" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Edit style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="card" style={{padding:16, marginBottom:12}}>
+        <div style={{display:'flex', alignItems:'center', gap:12, marginBottom:14}}>
+          <div className="avatar" style={{width:50, height:50, fontSize:16, borderRadius:15, background:'var(--primary-soft)', color:'var(--primary)'}}>PS</div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:'Fraunces', fontWeight:500, fontSize:17}}>Priya Sharma</div>
+            <div style={{fontSize:11, color:'var(--muted)', marginTop:2}}>+91 98765 43210 · since Jan'25</div>
+          </div>
+          <button className="btn btn-primary" style={{padding:'8px 12px', fontSize:11}}><I.Phone style={{width:11, height:11}}/></button>
+        </div>
+        <div style={{display:'flex', gap:8, padding:11, background:'var(--bg-warm)', borderRadius:11, fontSize:11, color:'var(--ink-soft)'}}>
+          <I.Pin style={{width:13, height:13, marginTop:1, flexShrink:0}}/>
+          <span>H-204, Sai Apartments, Kothrud · Route A · Stop #1</span>
+        </div>
+      </div>
+      <div className="row-3" style={{marginBottom:14}}>
+        <div className="stat-cell"><div className="stat-lbl">Lifetime</div><div className="stat-val" style={{fontSize:17}}>₹84k</div></div>
+        <div className="stat-cell"><div className="stat-lbl">May bill</div><div className="stat-val" style={{fontSize:17}}>₹1,284</div></div>
+        <div className="stat-cell"><div className="stat-lbl">Due</div><div className="stat-val" style={{fontSize:17, color:'var(--primary)'}}>₹0</div></div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Standing order</div>
+      <div className="card" style={{padding:12, marginBottom:14}}>
+        <div style={{display:'flex', alignItems:'center', gap:11}}>
+          <div style={{width:38, height:38, borderRadius:11, background:'var(--accent-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:17, height:17, color:'var(--accent)'}}/></div>
+          <div style={{flex:1}}>
+            <div style={{fontWeight:600, fontSize:13}}>Cow milk · 1 litre</div>
+            <div style={{fontSize:10, color:'var(--muted)'}}>Daily · ₹62 · since Jan 2025</div>
+          </div>
+          <I.Repeat style={{width:14, height:14, color:'var(--muted)'}}/>
+        </div>
+        <div style={{display:'flex', gap:6, marginTop:11, paddingTop:11, borderTop:'1px dashed var(--line)'}}>
+          <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 10px'}}>Pause</button>
+          <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 10px'}}>Skip date</button>
+          <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 10px'}}>Modify</button>
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Ledger · last 5</div>
+      {[{d:'20 May',t:'Cow 1L + Curd',dr:102,cr:0},{d:'19 May',t:'Cow 1L',dr:62,cr:0},{d:'18 May',t:'UPI received',dr:0,cr:1800},{d:'18 May',t:'Cow 1L + Paneer',dr:182,cr:0},{d:'17 May',t:'Cow 1L',dr:62,cr:0}].map((l,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'9px 0', borderBottom:i<4?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:11, fontWeight:500}}>{l.t}</div><div style={{fontSize:9, color:'var(--muted)', marginTop:1}}>{l.d}</div></div>
+          <div className="mono" style={{fontSize:11, fontWeight:600, color:l.cr>0?'var(--primary)':'var(--ink)'}}>{l.cr>0?`+₹${l.cr}`:`−₹${l.dr}`}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerProducts = ({onBack}) => (
+  <div>
+    <PageHeader title="Products" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['All 18','Milk 4','Curd 5','Ghee 3','Eggs 2','Low stock 3'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      {[{n:'Cow milk · 1L',c:'Milk',sp:62,cp:48,st:120,low:false,t:'var(--accent)'},{n:'Cow milk · 500ml',c:'Milk',sp:32,cp:24,st:80,low:false,t:'var(--accent)'},{n:'Buffalo milk · 500ml',c:'Milk',sp:48,cp:36,st:40,low:false,t:'#3a2a1f'},{n:'Curd · 200g',c:'Curd',sp:40,cp:28,st:35,low:false,t:'var(--primary)'},{n:'Paneer · 250g',c:'Paneer',sp:120,cp:88,st:8,low:true,t:'var(--rose)'},{n:'Ghee · 500g',c:'Ghee',sp:420,cp:340,st:6,low:true,t:'var(--accent)'},{n:'Butter · 100g',c:'Butter',sp:68,cp:54,st:4,low:true,t:'var(--rose)'}].map((p,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+          <div style={{display:'flex', alignItems:'center', gap:11}}>
+            <div style={{width:42, height:42, borderRadius:11, background:`color-mix(in srgb, ${p.t} 12%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:18, height:18, color:p.t}}/></div>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:600, fontSize:13}}>{p.n}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{p.c} · ₹{p.sp} sell · ₹{p.cp} cost · {Math.round((p.sp-p.cp)/p.sp*100)}% margin</div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              <div className="mono" style={{fontSize:13, fontWeight:600, color:p.low?'var(--rose)':'var(--ink)'}}>{p.st}</div>
+              <div style={{fontSize:9, color:'var(--muted)'}}>in stock</div>
+            </div>
+          </div>
+          {p.low && <div style={{marginTop:9, padding:'7px 10px', background:'var(--rose-soft)', color:'var(--rose)', borderRadius:9, fontSize:10, fontWeight:600, display:'flex', alignItems:'center', gap:6}}><I.AlertTri style={{width:11, height:11}}/> Low stock · reorder soon</div>}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerInvoices = ({onBack, onGen}) => (
+  <div>
+    <PageHeader title="Invoices" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}} onClick={onGen}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="card" style={{padding:14, marginBottom:14, background:'linear-gradient(135deg, var(--accent), #B8721A)', borderColor:'transparent', color:'#fff', position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:-30, right:-30, width:120, height:120, background:'rgba(255,255,255,0.1)', borderRadius:'50%'}}></div>
+        <div style={{position:'relative'}}>
+          <div style={{fontSize:10, opacity:0.85, textTransform:'uppercase', fontWeight:700, letterSpacing:'0.08em'}}>Bulk action</div>
+          <div className="display" style={{fontSize:20, fontWeight:500, marginTop:6, lineHeight:1.1}}>Generate by<br/>date range →</div>
+          <button onClick={onGen} style={{marginTop:12, padding:'10px 14px', background:'#fff', color:'var(--accent)', border:'none', borderRadius:10, fontWeight:700, fontSize:12, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:6}}>
+            <I.Receipt style={{width:13, height:13}}/> Start
+          </button>
+        </div>
+      </div>
+      <div className="chips" style={{marginBottom:12}}>{['All 156','Paid 142','Pending 14','Overdue 3'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      <div className="section-title" style={{marginBottom:8}}>Recent invoices</div>
+      {[{no:'INV-2026-0156',n:'Priya Sharma',d:'1–20 May',a:1284,s:'Pending'},{no:'INV-2026-0155',n:'Aakash Verma',d:'1–20 May',a:984,s:'Sent'},{no:'INV-2026-0154',n:'Sneha Patil',d:'1–20 May',a:2480,s:'Paid'},{no:'INV-2026-0153',n:'Vikram Reddy',d:'1–15 May',a:640,s:'Overdue'},{no:'INV-2026-0152',n:'Maya Iyer',d:'1–20 May',a:1240,s:'Paid'}].map((inv,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+            <div>
+              <div className="mono" style={{fontSize:10, color:'var(--muted)', fontWeight:600}}>{inv.no}</div>
+              <div style={{fontWeight:600, fontSize:13, marginTop:2}}>{inv.n}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>Period: {inv.d}</div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              <div className="mono" style={{fontSize:13, fontWeight:600}}>₹{inv.a.toLocaleString('en-IN')}</div>
+              <span className="pill" style={{background:inv.s==='Paid'?'var(--primary-soft)':inv.s==='Pending'?'var(--accent-soft)':inv.s==='Sent'?'var(--blue-soft)':'var(--rose-soft)', color:inv.s==='Paid'?'var(--primary)':inv.s==='Pending'?'var(--accent)':inv.s==='Sent'?'var(--blue)':'var(--rose)', marginTop:4}}>{inv.s}</span>
+            </div>
+          </div>
+          <div style={{display:'flex', gap:5, marginTop:10, paddingTop:9, borderTop:'1px dashed var(--line)'}}>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'6px 8px'}}><I.Whats style={{width:11, height:11}}/></button>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'6px 8px'}}><I.Mail style={{width:11, height:11}}/></button>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'6px 8px'}}><I.Download style={{width:11, height:11}}/></button>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'6px 8px'}}><I.Print style={{width:11, height:11}}/></button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerInvoiceGen = ({onBack, onPreview}) => {
+  const [scope, setScope] = useState('all');
+  const [send, setSend] = useState(['whatsapp']);
+  const [gst, setGst] = useState(true);
+  return (
+    <div>
+      <PageHeader title="Generate invoices" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Scope</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[{id:'all',l:'All customers',s:'284 customers',i:<I.Users/>},{id:'route',l:'By route',s:'Choose route',i:<I.Map/>},{id:'one',l:'One customer',s:'Pick customer',i:<I.Users/>},{id:'overdue',l:'Overdue only',s:'14 customers',i:<I.AlertTri/>}].map(o=>(
+              <button key={o.id} onClick={()=>setScope(o.id)} style={{padding:11, background:scope===o.id?'var(--ink)':'var(--card)', color:scope===o.id?'var(--bg)':'var(--ink)', border:`1px solid ${scope===o.id?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', textAlign:'left'}}>
+                <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:4}}>{React.cloneElement(o.i,{style:{width:14, height:14}})}<span style={{fontWeight:600, fontSize:12}}>{o.l}</span></div>
+                <div style={{fontSize:10, opacity:0.7}}>{o.s}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:10}}>Date range</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:10}}>
+            <div><div style={{fontSize:10, color:'var(--muted)', fontWeight:600, marginBottom:5}}>FROM</div><div className="date-input"><I.Calendar style={{width:13, height:13, color:'var(--ink-soft)'}}/><span style={{fontWeight:600, fontSize:12}}>1 May 2026</span></div></div>
+            <div><div style={{fontSize:10, color:'var(--muted)', fontWeight:600, marginBottom:5}}>TO</div><div className="date-input"><I.Calendar style={{width:13, height:13, color:'var(--ink-soft)'}}/><span style={{fontWeight:600, fontSize:12}}>20 May 2026</span></div></div>
+          </div>
+          <div className="chips">{['Today','Yesterday','This week','This month','Last month','Last 7d','Last 30d','Custom'].map((c,i)=><span key={i} className={`chip ${i===3?'on':''}`}>{c}</span>)}</div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:10}}>Options</div>
+          {[{l:'Include GST breakdown',s:'18% on applicable items',v:gst,on:()=>setGst(!gst)},{l:'Include payment history',s:'Show partial payments',v:true},{l:'Item-wise details',s:'Each delivery as a line',v:true},{l:'E-signature',s:'Digital owner signature',v:true}].map((o,i)=>(
+            <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:i<3?'1px solid var(--line)':'none'}}>
+              <div style={{flex:1}}><div style={{fontSize:12, fontWeight:500}}>{o.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{o.s}</div></div>
+              <div onClick={o.on} style={{width:34, height:20, borderRadius:999, background:o.v?'var(--primary)':'var(--line)', position:'relative', cursor:'pointer'}}><div style={{position:'absolute', top:2, left:o.v?16:2, width:16, height:16, background:'#fff', borderRadius:'50%', transition:'left 0.2s'}}></div></div>
+            </div>
+          ))}
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:10}}>Send via</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[{id:'whatsapp',l:'WhatsApp',i:<I.Whats/>},{id:'sms',l:'SMS',i:<I.Phone/>},{id:'email',l:'Email',i:<I.Mail/>},{id:'print',l:'Print',i:<I.Print/>}].map(o=>{
+              const on = send.includes(o.id);
+              return <button key={o.id} onClick={()=>setSend(s=>s.includes(o.id)?s.filter(x=>x!==o.id):[...s,o.id])} style={{padding:10, background:on?'var(--ink)':'var(--card)', color:on?'var(--bg)':'var(--ink)', border:`1px solid ${on?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', display:'flex', alignItems:'center', gap:6}}>{React.cloneElement(o.i,{style:{width:13, height:13}})}<span style={{fontWeight:600, fontSize:11}}>{o.l}</span></button>;
+            })}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:14, background:'var(--bg-warm)'}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+            <div>
+              <div style={{fontSize:11, color:'var(--muted)', fontWeight:600}}>Will generate</div>
+              <div className="display" style={{fontSize:22, fontWeight:500, marginTop:2}}>284 invoices</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:2}}>~₹3.84L total · 1–20 May</div>
+            </div>
+            <I.Receipt style={{width:32, height:32, color:'var(--ink-soft)'}}/>
+          </div>
+        </div>
+        <button className="btn btn-dark btn-block" onClick={onPreview} style={{padding:'14px'}}>Preview first invoice →</button>
+      </div>
+    </div>
+  );
+};
+ 
+const OwnerInvoicePreview = ({onBack}) => (
+  <div>
+    <PageHeader title="Invoice preview" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Share style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{textAlign:'center', fontSize:10, color:'var(--muted)', marginBottom:8}}>Showing 1 of 284 · swipe →</div>
+      <div className="invoice-paper">
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', paddingBottom:12, borderBottom:'2px solid var(--ink)'}}>
+          <div>
+            <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:4}}>
+              <div style={{width:18, height:18, borderRadius:5, background:'var(--primary)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:9, height:9, color:'#fff'}}/></div>
+              <div className="display" style={{fontSize:13, fontWeight:600}}>Sai Dairy Farm</div>
+            </div>
+            <div style={{fontSize:8.5, color:'var(--muted)', lineHeight:1.5}}>123 Mahatma Phule Rd, Kothrud<br/>Pune 411038 · MH<br/>GSTIN: 27AABCS1234A1Z5</div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div style={{fontSize:8, color:'var(--muted)', fontWeight:700, letterSpacing:'0.06em', textTransform:'uppercase'}}>Tax Invoice</div>
+            <div className="mono" style={{fontSize:11, fontWeight:600, marginTop:2}}>INV-2026-0157</div>
+            <div style={{fontSize:8.5, color:'var(--muted)', marginTop:2}}>Date: 20 May 2026</div>
+            <div style={{fontSize:8.5, color:'var(--muted)'}}>Due: 27 May 2026</div>
+          </div>
+        </div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, padding:'10px 0', borderBottom:'1px solid var(--line)'}}>
+          <div><div className="inv-th">Billed to</div><div style={{fontSize:11, fontWeight:600, marginTop:3}}>Priya Sharma</div><div style={{fontSize:9, color:'var(--muted)', marginTop:1, lineHeight:1.4}}>H-204, Sai Apartments<br/>Kothrud, Pune 411038<br/>+91 98765 43210</div></div>
+          <div><div className="inv-th">Period</div><div style={{fontSize:11, fontWeight:600, marginTop:3}}>1–20 May 2026</div><div style={{fontSize:9, color:'var(--muted)', marginTop:1}}>20 days · Route A · #1</div></div>
+        </div>
+        <div style={{padding:'10px 0'}}>
+          <div className="inv-th" style={{marginBottom:6}}>Items</div>
+          <div style={{display:'grid', gridTemplateColumns:'2fr 0.6fr 0.7fr 0.7fr', gap:4, fontSize:9, fontWeight:700, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'0.04em', paddingBottom:5, borderBottom:'1px solid var(--line)'}}>
+            <span>Description</span><span style={{textAlign:'right'}}>Qty</span><span style={{textAlign:'right'}}>Rate</span><span style={{textAlign:'right'}}>Amt</span>
+          </div>
+          {[{d:'Cow milk 1L · daily',q:'20 L',r:'62',a:'1,240'},{d:'Curd 200g · alt days',q:'9 pc',r:'40',a:'360'},{d:'Paneer 250g · 18 May',q:'1 pc',r:'120',a:'120'}].map((row,i)=>(
+            <div key={i} style={{display:'grid', gridTemplateColumns:'2fr 0.6fr 0.7fr 0.7fr', gap:4, fontSize:10, padding:'5px 0', borderBottom:i<2?'1px dashed var(--line)':'none'}}>
+              <span>{row.d}</span><span style={{textAlign:'right'}} className="mono">{row.q}</span><span style={{textAlign:'right'}} className="mono">₹{row.r}</span><span style={{textAlign:'right'}} className="mono">₹{row.a}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{padding:'10px 0', borderTop:'1px solid var(--line)'}}>
+          <div className="inv-row"><span style={{color:'var(--muted)'}}>Subtotal</span><span className="mono">₹1,720</span></div>
+          <div className="inv-row"><span style={{color:'var(--muted)'}}>Loyalty discount</span><span className="mono">−₹50</span></div>
+          <div className="inv-row"><span style={{color:'var(--muted)'}}>CGST 2.5%</span><span className="mono">₹3</span></div>
+          <div className="inv-row"><span style={{color:'var(--muted)'}}>SGST 2.5%</span><span className="mono">₹3</span></div>
+          <div className="inv-row"><span style={{color:'var(--muted)'}}>Payments received</span><span className="mono" style={{color:'var(--primary)'}}>−₹400</span></div>
+          <div className="inv-row" style={{borderTop:'2px solid var(--ink)', marginTop:4, paddingTop:8}}>
+            <span style={{fontWeight:700, fontSize:11.5}}>Amount due</span>
+            <span className="mono" style={{fontWeight:700, fontSize:13}}>₹1,276</span>
+          </div>
+        </div>
+        <div style={{padding:'10px 0 6px', borderTop:'1px dashed var(--line)'}}>
+          <div className="inv-th">Pay via UPI</div>
+          <div style={{display:'flex', alignItems:'center', gap:10, marginTop:6}}>
+            <div style={{width:40, height:40, background:'#fff', border:'1px solid var(--line)', borderRadius:6, display:'grid', gridTemplateColumns:'repeat(8,1fr)', gap:0, padding:2}}>
+              {Array.from({length:64}).map((_,i)=><div key={i} style={{background:[0,2,4,6,9,10,14,17,20,22,25,28,31,33,36,40,43,45,48,50,53,56,58,61].includes(i)?'#000':'transparent'}}></div>)}
+            </div>
+            <div style={{fontSize:9}}><div className="mono" style={{fontWeight:600}}>saidairy@okhdfc</div><div style={{color:'var(--muted)', marginTop:2}}>or scan QR</div></div>
+          </div>
+        </div>
+        <div style={{textAlign:'center', fontSize:8, color:'var(--muted)', marginTop:8, paddingTop:8, borderTop:'1px dashed var(--line)'}}>Thank you · saidairy.in · +91 98765 43210</div>
+      </div>
+      <div style={{display:'flex', gap:7, marginTop:14}}>
+        <button className="btn btn-ghost" style={{flex:1, fontSize:11}}>← Prev</button>
+        <button className="btn btn-ghost" style={{flex:1, fontSize:11}}>Next →</button>
+      </div>
+      <button className="btn btn-dark btn-block" style={{marginTop:8, padding:'14px'}}>Generate & send all 284 →</button>
+    </div>
+  </div>
+);
+ 
+const OwnerRoutes = ({onBack}) => (
+  <div>
+    <PageHeader title="Routes" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['Today','This week','This month','Custom'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      <div className="card" style={{padding:14, marginBottom:12, background:'var(--bg-warm)'}}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <div><div className="stat-lbl">Today total</div><div className="display" style={{fontSize:24, fontWeight:500, marginTop:2}}>₹24,580</div><div style={{fontSize:10, color:'var(--muted)', marginTop:2}}>198 orders</div></div>
+          <I.Map style={{width:32, height:32, color:'var(--ink-soft)'}}/>
+        </div>
+      </div>
+      {[{n:'Route A · Kothrud',cust:78,ord:78,amt:9240,paid:7180,boy:'Ravi K.',live:true},{n:'Route B · Aundh',cust:64,ord:60,amt:7180,paid:4450,boy:'Suresh M.',live:true},{n:'Route C · Baner',cust:56,ord:52,amt:5940,paid:4990,boy:'Anil P.',live:false},{n:'Route D · Hinjewadi',cust:38,ord:8,amt:920,paid:760,boy:'Unassigned',live:false}].map((r,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+            <div>
+              <div style={{display:'flex', alignItems:'center', gap:5}}><span style={{fontWeight:600, fontSize:13}}>{r.n}</span>{r.live && <span className="pulse" style={{width:6, height:6, background:'var(--primary)', borderRadius:'50%'}}></span>}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{r.cust} customers · {r.boy}</div>
+            </div>
+            <I.ChevR style={{width:14, height:14, color:'var(--muted)'}}/>
+          </div>
+          <div className="row-3" style={{marginTop:10, paddingTop:9, borderTop:'1px dashed var(--line)'}}>
+            <div><div style={{fontSize:9, color:'var(--muted)', fontWeight:600, textTransform:'uppercase'}}>Orders</div><div className="mono" style={{fontSize:12, fontWeight:600}}>{r.ord}/{r.cust}</div></div>
+            <div><div style={{fontSize:9, color:'var(--muted)', fontWeight:600, textTransform:'uppercase'}}>Total</div><div className="mono" style={{fontSize:12, fontWeight:600}}>₹{(r.amt/1000).toFixed(1)}k</div></div>
+            <div><div style={{fontSize:9, color:'var(--muted)', fontWeight:600, textTransform:'uppercase'}}>Due</div><div className="mono" style={{fontSize:12, fontWeight:600, color:'var(--rose)'}}>₹{((r.amt-r.paid)/1000).toFixed(1)}k</div></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerReports = ({onBack}) => (
+  <div>
+    <PageHeader title="Reports" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="section-title" style={{marginBottom:8}}>Pick a report</div>
+      {[{l:'Sales by date',s:'Daily / weekly / monthly',i:<I.TrendUp/>,c:'var(--primary)'},{l:'Profit & loss',s:'Sales − cost − expenses',i:<I.Wallet/>,c:'var(--accent)'},{l:'Customer-wise sales',s:'Top spenders, churn',i:<I.Users/>,c:'var(--blue)'},{l:'Product-wise sales',s:'Best & worst sellers',i:<I.Package/>,c:'var(--purple)'},{l:'Route performance',s:'Time, completion rate',i:<I.Map/>,c:'var(--primary)'},{l:'Agent performance',s:'Deliveries, ratings',i:<I.Truck/>,c:'var(--accent)'},{l:'Outstanding dues',s:'30/60/90 day aging',i:<I.AlertTri/>,c:'var(--rose)'},{l:'GST returns',s:'GSTR-1, GSTR-3B',i:<I.FileText/>,c:'var(--ink)'},{l:'Stock movement',s:'In, out, wastage, value',i:<I.Box/>,c:'var(--blue)'},{l:'Cash flow',s:'Inflow, outflow, balance',i:<I.Coins/>,c:'var(--primary)'}].map((r,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11, cursor:'pointer'}}>
+          <div style={{width:34, height:34, borderRadius:10, background:`color-mix(in srgb, ${r.c} 12%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center'}}>{React.cloneElement(r.i,{style:{width:15, height:15, color:r.c}})}</div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{r.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{r.s}</div></div>
+          <I.ChevR style={{width:14, height:14, color:'var(--muted)'}}/>
+        </div>
+      ))}
+      <div style={{marginTop:14, padding:14, background:'var(--bg-warm)', borderRadius:14, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5}}>Every report exports to <strong>PDF, Excel, CSV</strong> and can email weekly.</div>
+    </div>
+  </div>
+);
+ 
+const OwnerExpenses = ({onBack}) => (
+  <div>
+    <PageHeader title="Expenses" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="row-2" style={{marginBottom:12}}>
+        <div className="stat-cell"><div className="stat-lbl">May spend</div><div className="stat-val">₹18,420</div></div>
+        <div className="stat-cell"><div className="stat-lbl">Recurring</div><div className="stat-val">₹12,800</div></div>
+      </div>
+      <div className="chips" style={{marginBottom:12}}>{['All','Rent','Salaries','Fuel','Packaging','Utilities','Stock','Misc'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      {[{l:'Shop rent (May)',d:'18 May',c:'Rent',a:8000,r:true},{l:'Ravi salary',d:'17 May',c:'Salaries',a:18400,r:true},{l:'Diesel — van',d:'17 May',c:'Fuel',a:2400,r:false},{l:'Milk packets',d:'16 May',c:'Packaging',a:1280,r:true},{l:'Electricity',d:'15 May',c:'Utilities',a:1640,r:true},{l:'Cow milk stock',d:'14 May',c:'Stock',a:24800,r:false}].map((e,i)=>(
+        <div key={i} className="list-row">
+          <div style={{width:32, height:32, borderRadius:9, background:'var(--bg-warm)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Coins style={{width:14, height:14, color:'var(--ink-soft)'}}/></div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{e.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{e.d} · {e.c}{e.r && ' · recurring'}</div></div>
+          <div className="mono" style={{fontSize:12, fontWeight:600, color:'var(--rose)'}}>−₹{e.a.toLocaleString('en-IN')}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerDues = ({onBack}) => (
+  <div>
+    <PageHeader title="Pending dues" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="card" style={{padding:14, marginBottom:12, background:'var(--rose-soft)', borderColor:'color-mix(in srgb, var(--rose) 25%, transparent)'}}>
+        <div style={{display:'flex', alignItems:'center', gap:11}}>
+          <I.AlertTri style={{width:22, height:22, color:'var(--rose)'}}/>
+          <div style={{flex:1}}><div style={{fontSize:11, color:'var(--muted)', fontWeight:600}}>Total outstanding</div><div className="display" style={{fontSize:24, fontWeight:500, color:'var(--rose)', marginTop:2}}>₹6,380</div></div>
+        </div>
+      </div>
+      <div className="row-3" style={{marginBottom:14}}>
+        <div className="stat-cell"><div className="stat-lbl">0–30d</div><div className="stat-val" style={{fontSize:16}}>₹3.2k</div></div>
+        <div className="stat-cell"><div className="stat-lbl">30–60d</div><div className="stat-val" style={{fontSize:16, color:'var(--accent)'}}>₹2.1k</div></div>
+        <div className="stat-cell"><div className="stat-lbl">60+d</div><div className="stat-val" style={{fontSize:16, color:'var(--rose)'}}>₹1.1k</div></div>
+      </div>
+      <button className="btn btn-dark btn-block" style={{marginBottom:14}}><I.Whats style={{width:13, height:13}}/> Send reminders to all 12</button>
+      {[{n:'Aakash Verma',d:420,a:'18 days'},{n:'Vikram Reddy',d:280,a:'25 days'},{n:'Anita Joshi',d:1240,a:'42 days'},{n:'Mohan Kale',d:680,a:'58 days'},{n:'Suresh Pawar',d:1100,a:'71 days'}].map((c,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+          <div className="avatar" style={{background:'var(--bg-warm)', color:'var(--ink-soft)'}}>{c.n.slice(0,2)}</div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{c.n}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>Overdue {c.a}</div></div>
+          <div style={{textAlign:'right'}}>
+            <div className="mono" style={{fontSize:12, fontWeight:600, color:'var(--rose)'}}>₹{c.d}</div>
+            <button style={{background:'#25D366', color:'#fff', border:'none', borderRadius:6, padding:'3px 8px', fontSize:9, fontWeight:600, marginTop:3, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:3}}><I.Whats style={{width:9, height:9}}/> Remind</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerCreateOrder = ({onBack}) => (
+  <div>
+    <PageHeader title="Place order" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="card" style={{padding:14, marginBottom:12}}>
+        <div className="stat-lbl" style={{marginBottom:8}}>Customer</div>
+        <div style={{display:'flex', alignItems:'center', gap:10, padding:10, background:'var(--bg-warm)', borderRadius:11}}>
+          <div className="avatar" style={{background:'var(--primary)', color:'#fff'}}>PS</div>
+          <div style={{flex:1}}><div style={{fontWeight:600, fontSize:13}}>Priya Sharma</div><div style={{fontSize:10, color:'var(--muted)'}}>Route A · H-204</div></div>
+          <button className="btn btn-ghost" style={{padding:'5px 9px', fontSize:10}}>Change</button>
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:12}}>
+        <div className="stat-lbl" style={{marginBottom:10}}>Order type</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+          {[{l:'One-time',s:'Single delivery',i:<I.Zap/>,on:true},{l:'Standing',s:'Daily/weekly',i:<I.Repeat/>,on:false},{l:'Scheduled',s:'Future date',i:<I.Calendar/>,on:false},{l:'Bulk',s:'Large quantity',i:<I.Gift/>,on:false}].map((o,i)=>(
+            <button key={i} style={{padding:11, background:o.on?'var(--ink)':'var(--card)', color:o.on?'var(--bg)':'var(--ink)', border:`1px solid ${o.on?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', textAlign:'left'}}>
+              <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>{React.cloneElement(o.i,{style:{width:13, height:13}})}<span style={{fontWeight:600, fontSize:12}}>{o.l}</span></div>
+              <div style={{fontSize:10, opacity:0.75}}>{o.s}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:12}}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10}}>
+          <span className="stat-lbl">Items</span>
+          <button style={{background:'none', border:'none', color:'var(--primary)', fontSize:11, fontWeight:600, cursor:'pointer'}}>+ Add</button>
+        </div>
+        {[{n:'Cow milk 1L',q:2,r:62},{n:'Curd 200g',q:1,r:40},{n:'Paneer 250g',q:1,r:120}].map((it,i)=>(
+          <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:i<2?'1px solid var(--line)':'none'}}>
+            <div style={{width:30, height:30, borderRadius:8, background:'var(--bg-warm)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:13, height:13, color:'var(--accent)'}}/></div>
+            <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{it.n}</div><div className="mono" style={{fontSize:10, color:'var(--muted)'}}>₹{it.r} × {it.q}</div></div>
+            <div style={{display:'flex', alignItems:'center', gap:6, background:'var(--bg)', borderRadius:8, padding:'3px 7px'}}>
+              <button style={{background:'none', border:'none', cursor:'pointer'}}>−</button>
+              <span className="mono" style={{fontWeight:600, fontSize:12}}>{it.q}</span>
+              <button style={{background:'none', border:'none', cursor:'pointer'}}>+</button>
+            </div>
+          </div>
+        ))}
+        <div style={{display:'flex', justifyContent:'space-between', paddingTop:11, marginTop:10, borderTop:'2px solid var(--ink)'}}>
+          <span style={{fontWeight:700, fontSize:13}}>Total</span>
+          <span className="mono" style={{fontWeight:700, fontSize:14}}>₹284</span>
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:12}}>
+        <div className="stat-lbl" style={{marginBottom:8}}>Payment</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:6}}>
+          {['UPI prepaid','Cash','Add to bill'].map((p,i)=>(<button key={i} style={{padding:'9px 6px', background:i===2?'var(--ink)':'var(--card)', color:i===2?'var(--bg)':'var(--ink)', border:`1px solid ${i===2?'var(--ink)':'var(--line)'}`, borderRadius:10, cursor:'pointer', fontSize:10, fontWeight:600}}>{p}</button>))}
+        </div>
+      </div>
+      <button className="btn btn-primary btn-block" style={{padding:'14px'}}>Place order · ₹284 →</button>
+    </div>
+  </div>
+);
+ 
+const OwnerStock = ({onBack}) => (
+  <div>
+    <PageHeader title="Stock & inventory" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="row-2" style={{marginBottom:12}}>
+        <div className="stat-cell"><div className="stat-lbl">Stock value</div><div className="stat-val">₹84,200</div></div>
+        <div className="stat-cell"><div className="stat-lbl">Low stock</div><div className="stat-val" style={{color:'var(--rose)'}}>3</div></div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:12, background:'var(--rose-soft)', borderColor:'color-mix(in srgb, var(--rose) 25%, transparent)'}}>
+        <div style={{display:'flex', alignItems:'center', gap:10}}>
+          <I.AlertTri style={{width:18, height:18, color:'var(--rose)'}}/>
+          <div style={{flex:1, fontSize:12, fontWeight:600}}>3 items need reordering</div>
+          <button className="btn" style={{background:'var(--rose)', color:'#fff', padding:'7px 11px', fontSize:11}}>Order</button>
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Recent movements</div>
+      {[{l:'Cow milk 1L',t:'IN · 80L from Krishna Farms',d:'2h',amt:'+80',c:'var(--primary)'},{l:'Paneer 250g',t:'SOLD · 12 units today',d:'today',amt:'−12',c:'var(--rose)'},{l:'Butter 100g',t:'WASTAGE · expired 2pc',d:'1h',amt:'−2',c:'var(--accent)'},{l:'Curd 200g',t:'IN · 30 pc fresh',d:'6h',amt:'+30',c:'var(--primary)'}].map((s,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+          <div style={{width:32, height:32, borderRadius:9, background:`color-mix(in srgb, ${s.c} 12%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Box style={{width:13, height:13, color:s.c}}/></div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{s.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{s.t}</div></div>
+          <div className="mono" style={{fontSize:13, fontWeight:600, color:s.c}}>{s.amt}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerPromos = ({onBack}) => (
+  <div>
+    <PageHeader title="Promotions" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="section-title" style={{marginBottom:8}}>Active codes</div>
+      {[{c:'NEW20',d:'20% off first order',u:48,e:'31 May'},{c:'GHEE15',d:'15% off ghee',u:23,e:'25 May'},{c:'DIWALI',d:'₹100 off ₹500+',u:0,e:'1 Nov'}].map((p,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:6}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+            <div style={{flex:1}}>
+              <div className="mono" style={{display:'inline-block', padding:'3px 8px', background:'var(--ink)', color:'var(--bg)', borderRadius:6, fontSize:10, fontWeight:700, letterSpacing:'0.04em'}}>{p.c}</div>
+              <div style={{fontSize:12, fontWeight:600, marginTop:6}}>{p.d}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>Used {p.u} times · expires {p.e}</div>
+            </div>
+            <I.Tag style={{width:16, height:16, color:'var(--muted)'}}/>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const OwnerPnL = ({onBack}) => (
+  <div>
+    <PageHeader title="Profit & loss" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Download style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['Today','This week','This month','Last month','Year','Custom'].map((c,i)=><span key={i} className={`chip ${i===2?'on':''}`}>{c}</span>)}</div>
+      <div style={{background:'linear-gradient(135deg, var(--primary), #0a3d24)', color:'#fff', borderRadius:18, padding:18, marginBottom:14}}>
+        <div className="stat-lbl" style={{color:'rgba(255,255,255,0.7)'}}>May net profit</div>
+        <div className="display" style={{fontSize:32, fontWeight:500, marginTop:4, lineHeight:1}}>₹62,800</div>
+        <div style={{fontSize:11, opacity:0.85, marginTop:6}}>↑ 14% vs April · 26% margin</div>
+      </div>
+      {[{l:'Total sales',v:'₹2,42,400',c:'var(--primary)',n:false},{l:'Cost of goods',v:'₹1,42,200',c:'var(--rose)',n:true},{l:'Gross profit',v:'₹1,00,200',c:'var(--ink)',n:false,b:true},{l:'Operating expenses',v:'₹37,400',c:'var(--rose)',n:true},{l:'Net profit',v:'₹62,800',c:'var(--primary)',n:false,b:true}].map((r,i)=>(
+        <div key={i} className="card" style={{padding:13, marginBottom:6, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <span style={{fontSize:13, fontWeight:r.b?700:500}}>{r.l}</span>
+          <span className="mono" style={{fontSize:14, fontWeight:r.b?700:600, color:r.c}}>{r.n?'−':''}{r.v}</span>
+        </div>
+      ))}
+      <div className="section-title" style={{marginTop:14, marginBottom:8}}>Top sellers</div>
+      {[{n:'Cow milk 1L',q:1840,a:114080},{n:'Buffalo 500ml',q:480,a:23040},{n:'Paneer 250g',q:142,a:17040},{n:'Curd 200g',q:380,a:15200}].map((p,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'9px 0', borderBottom:i<3?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:12, fontWeight:500}}>{p.n}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{p.q} sold</div></div>
+          <div className="mono" style={{fontSize:12, fontWeight:600}}>₹{p.a.toLocaleString('en-IN')}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+// ============= CUSTOMER MENU =============
+const CUSTOMER_MENU = [
+  {label:'Shop', items:[
+    {id:'home', label:'Home', icon:<I.Home/>},
+    {id:'categories', label:'Browse categories', icon:<I.Layers/>},
+    {id:'standing-orders', label:'My standing orders', icon:<I.Repeat/>, badge:'2'},
+    {id:'reorder', label:'Quick reorder', icon:<I.Zap/>},
+    {id:'bulk', label:'Bulk / event order', icon:<I.Gift/>},
+    {id:'scheduled', label:'Schedule for date', icon:<I.Calendar/>},
+    {id:'family', label:'Family group order', icon:<I.Users/>},
+    {id:'favorites', label:'Favorites', icon:<I.Heart/>},
+    {id:'cart', label:'Cart', icon:<I.Cart/>, badge:'3'},
+  ]},
+  {label:'My orders', items:[
+    {id:'orders', label:'Order history', icon:<I.Package/>},
+    {id:'track', label:'Track delivery', icon:<I.Map/>, badge:'Live'},
+    {id:'skip', label:'Skip a delivery', icon:<I.Calendar/>},
+    {id:'returns-c', label:'Returns', icon:<I.Refresh/>},
+  ]},
+  {label:'Money', items:[
+    {id:'wallet', label:'Wallet', icon:<I.Wallet/>, badge:'₹420'},
+    {id:'bill', label:'Current bill', icon:<I.Receipt/>},
+    {id:'pay', label:'Pay bill', icon:<I.CreditCard/>},
+    {id:'invoices-c', label:'Invoices', icon:<I.FileText/>},
+    {id:'payment-methods', label:'Payment methods', icon:<I.CreditCard/>},
+  ]},
+  {label:'Account', items:[
+    {id:'profile', label:'Profile', icon:<I.Users/>},
+    {id:'addresses', label:'Addresses', icon:<I.Pin/>},
+    {id:'holiday', label:'Holiday calendar', icon:<I.Calendar/>},
+    {id:'notifs-c', label:'Notifications', icon:<I.Bell/>},
+    {id:'language', label:'Language', icon:<I.Globe/>},
+  ]},
+  {label:'More', items:[
+    {id:'refer', label:'Refer & earn', icon:<I.Gift/>, badge:'₹100'},
+    {id:'rewards', label:'Loyalty points', icon:<I.Star/>, badge:'248'},
+    {id:'feedback-c', label:'Rate delivery', icon:<I.Star/>},
+    {id:'support-c', label:'Help & support', icon:<I.Help/>},
+    {id:'agent-c', label:'About your agent', icon:<I.Truck/>},
+  ]},
+];
+ 
+const CustomerApp = () => {
+  const [screen, setScreen] = useState('home');
+  const [drawer, setDrawer] = useState(false);
+  const back = () => setScreen('home');
+  return (<>
+    <StatusBar/>
+    <Drawer open={drawer} onClose={()=>setDrawer(false)} role="customer" items={CUSTOMER_MENU} currentScreen={screen} onSelect={setScreen}/>
+    <div className="screen-body">
+      <TopBar onMenu={()=>setDrawer(true)} sub="Customer" title="Hi Priya" dotted/>
+      {screen==='home' && <CustomerHome onNav={setScreen}/>}
+      {screen==='categories' && <CustomerCategories onBack={back}/>}
+      {screen==='cart' && <CustomerCart onBack={back}/>}
+      {screen==='bill' && <CustomerBill onBack={back}/>}
+      {screen==='wallet' && <CustomerWallet onBack={back}/>}
+      {screen==='orders' && <CustomerOrders onBack={back}/>}
+      {screen==='standing-orders' && <CustomerStanding onBack={back}/>}
+      {screen==='scheduled' && <CustomerScheduled onBack={back}/>}
+      {screen==='holiday' && <CustomerHoliday onBack={back}/>}
+      {screen==='refer' && <CustomerRefer onBack={back}/>}
+      {screen==='track' && <CustomerTrack onBack={back}/>}
+      {!['home','categories','cart','bill','wallet','orders','standing-orders','scheduled','holiday','refer','track'].includes(screen) && <Placeholder title={CUSTOMER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
+    </div>
+  </>);
+};
+ 
+const CustomerHome = ({onNav}) => (
+  <div style={{padding:'4px 16px 24px'}}>
+    <div style={{margin:'8px 0 14px'}}>
+      <div className="greet">Wed, 20 May</div>
+      <div className="greet-name">What'll it be<br/><em style={{color:'var(--accent)', fontStyle:'italic', fontWeight:400}}>tomorrow?</em></div>
+    </div>
+    <div onClick={()=>onNav('track')} className="card" style={{padding:12, marginBottom:14, background:'var(--accent-soft)', borderColor:'color-mix(in srgb, var(--accent) 25%, transparent)', display:'flex', alignItems:'center', gap:11, cursor:'pointer'}}>
+      <div style={{width:36, height:36, background:'var(--accent)', borderRadius:11, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Truck style={{width:16, height:16, color:'#fff'}}/></div>
+      <div style={{flex:1}}>
+        <div style={{fontWeight:600, fontSize:12}}>Ravi is on Route A</div>
+        <div style={{fontSize:10, color:'var(--ink-soft)'}}>ETA 7:15–7:45 AM tomorrow</div>
+      </div>
+      <button className="btn" style={{padding:'6px 10px', fontSize:10, background:'var(--ink)', color:'var(--bg)'}}>Track</button>
+    </div>
+    <div className="section-title" style={{marginBottom:8}}>How to order</div>
+    <div className="row-2" style={{marginBottom:14}}>
+      {[{l:'Quick reorder',s:'Repeat last',i:<I.Zap/>,c:'var(--ink)',n:'reorder'},{l:'Standing order',s:'Daily/weekly',i:<I.Repeat/>,c:'var(--primary)',n:'standing-orders'},{l:'Schedule date',s:'Pick exact day',i:<I.Calendar/>,c:'var(--accent)',n:'scheduled'},{l:'Bulk / event',s:'Large quantity',i:<I.Gift/>,c:'var(--blue)',n:'bulk'}].map((q,i)=>(
+        <button key={i} onClick={()=>onNav(q.n)} className="card" style={{padding:11, cursor:'pointer', textAlign:'left', display:'flex', flexDirection:'column', alignItems:'flex-start', border:'1px solid var(--line)'}}>
+          <div style={{width:32, height:32, borderRadius:10, background:q.c, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:8}}>{React.cloneElement(q.i,{style:{width:15, height:15}})}</div>
+          <div style={{fontWeight:600, fontSize:12}}>{q.l}</div>
+          <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{q.s}</div>
+        </button>
+      ))}
+    </div>
+    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
+      <span className="section-title">Standing orders</span>
+      <a onClick={()=>onNav('standing-orders')} style={{fontSize:11, color:'var(--accent)', fontWeight:600, cursor:'pointer'}}>Manage →</a>
+    </div>
+    <div className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+      <div style={{width:36, height:36, borderRadius:11, background:'var(--accent-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:17, height:17, color:'var(--accent)'}}/></div>
+      <div style={{flex:1}}><div style={{fontWeight:600, fontSize:12}}>Cow milk · 1L</div><div style={{fontSize:10, color:'var(--muted)'}}>Daily · ₹62 · 6:30 AM</div></div>
+      <span className="pill" style={{background:'var(--primary-soft)', color:'var(--primary)'}}>Active</span>
+    </div>
+    <div className="card" style={{padding:11, marginBottom:14, display:'flex', alignItems:'center', gap:11}}>
+      <div style={{width:36, height:36, borderRadius:11, background:'var(--primary-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Package style={{width:15, height:15, color:'var(--primary)'}}/></div>
+      <div style={{flex:1}}><div style={{fontWeight:600, fontSize:12}}>Curd · 200g</div><div style={{fontSize:10, color:'var(--muted)'}}>Tue/Thu/Sat · ₹40</div></div>
+      <span className="pill" style={{background:'var(--primary-soft)', color:'var(--primary)'}}>Active</span>
+    </div>
+    <div className="section-title" style={{marginBottom:8}}>Shop now</div>
+    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+      {[{n:'Buffalo milk',s:'500ml',p:48,t:'#3a2a1f'},{n:'Paneer',s:'250g',p:120,t:'var(--primary)'},{n:'Cow ghee',s:'500g',p:420,t:'var(--accent)'},{n:'White butter',s:'100g',p:68,t:'var(--rose)'}].map((p,i)=>(
+        <div key={i} className="card" style={{padding:9}}>
+          <div style={{aspectRatio:'1', background:`color-mix(in srgb, ${p.t} 10%, transparent)`, borderRadius:9, marginBottom:7, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:24, height:24, color:p.t}}/></div>
+          <div style={{fontSize:11, fontWeight:600}}>{p.n}</div>
+          <div style={{fontSize:9, color:'var(--muted)', marginBottom:5}}>{p.s} · ₹{p.p}</div>
+          <button style={{width:'100%', padding:6, background:'var(--ink)', color:'var(--bg)', border:'none', borderRadius:8, fontSize:10, fontWeight:600, cursor:'pointer'}}>Add to cart</button>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerCategories = ({onBack}) => (
+  <div>
+    <PageHeader title="Browse" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      {[{n:'Milk',i:6,c:'var(--accent)'},{n:'Curd & yogurt',i:4,c:'var(--primary)'},{n:'Paneer & cheese',i:3,c:'var(--blue)'},{n:'Ghee & butter',i:5,c:'var(--rose)'},{n:'Eggs',i:2,c:'#3a2a1f'},{n:'Bread & bakery',i:8,c:'var(--purple)'},{n:'Sweets',i:4,c:'var(--accent)'}].map((c,i)=>(
+        <div key={i} className="card" style={{padding:13, marginBottom:7, display:'flex', alignItems:'center', gap:11, cursor:'pointer'}}>
+          <div style={{width:36, height:36, borderRadius:11, background:`color-mix(in srgb, ${c.c} 14%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:17, height:17, color:c.c}}/></div>
+          <div style={{flex:1}}><div style={{fontWeight:600, fontSize:13}}>{c.n}</div><div style={{fontSize:10, color:'var(--muted)'}}>{c.i} items</div></div>
+          <I.ChevR style={{width:14, height:14, color:'var(--muted)'}}/>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerCart = ({onBack}) => (
+  <div>
+    <PageHeader title="Your cart" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      {[{n:'Cow milk 1L',q:2,p:62},{n:'Curd 200g',q:1,p:40},{n:'Paneer 250g',q:1,p:120}].map((it,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:7, display:'flex', alignItems:'center', gap:11}}>
+          <div style={{width:40, height:40, borderRadius:11, background:'var(--accent-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:17, height:17, color:'var(--accent)'}}/></div>
+          <div style={{flex:1}}><div style={{fontWeight:600, fontSize:12}}>{it.n}</div><div className="mono" style={{fontSize:10, color:'var(--muted)'}}>₹{it.p}</div></div>
+          <div style={{display:'flex', alignItems:'center', gap:6, background:'var(--bg-warm)', borderRadius:8, padding:'4px 9px'}}>
+            <button style={{background:'none', border:'none', cursor:'pointer'}}>−</button>
+            <span className="mono" style={{fontWeight:600, fontSize:12}}>{it.q}</span>
+            <button style={{background:'none', border:'none', cursor:'pointer'}}>+</button>
+          </div>
+        </div>
+      ))}
+      <div className="card" style={{padding:14, marginTop:14, marginBottom:12}}>
+        <div className="stat-lbl" style={{marginBottom:9}}>Delivery</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+          {[{l:'Tomorrow',s:'7:15 AM',on:true},{l:'Pick date',s:'Future',on:false}].map((d,i)=>(
+            <button key={i} style={{padding:10, background:d.on?'var(--ink)':'var(--card)', color:d.on?'var(--bg)':'var(--ink)', border:`1px solid ${d.on?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer'}}>
+              <div style={{fontSize:11, fontWeight:600}}>{d.l}</div>
+              <div style={{fontSize:9, opacity:0.7, marginTop:1}}>{d.s}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:14}}>
+        <div className="stat-lbl" style={{marginBottom:9}}>Pay with</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+          {[{l:'UPI now',s:'GPay/PhonePe',on:true,i:<I.Zap/>},{l:'Wallet ₹420',s:'Use balance',on:false,i:<I.Wallet/>},{l:'Cash',s:'Pay agent',on:false,i:<I.Coins/>},{l:'Add to bill',s:'End of month',on:false,i:<I.Receipt/>}].map((p,i)=>(
+            <button key={i} style={{padding:10, background:p.on?'var(--ink)':'var(--card)', color:p.on?'var(--bg)':'var(--ink)', border:`1px solid ${p.on?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', textAlign:'left'}}>
+              <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:2}}>{React.cloneElement(p.i,{style:{width:12, height:12}})}<span style={{fontWeight:600, fontSize:11}}>{p.l}</span></div>
+              <div style={{fontSize:9, opacity:0.7}}>{p.s}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:14}}>
+        <div style={{display:'flex', justifyContent:'space-between', padding:'4px 0', fontSize:11}}><span style={{color:'var(--muted)'}}>Subtotal</span><span className="mono">₹284</span></div>
+        <div style={{display:'flex', justifyContent:'space-between', padding:'4px 0', fontSize:11}}><span style={{color:'var(--muted)'}}>Delivery</span><span className="mono" style={{color:'var(--primary)'}}>FREE</span></div>
+        <div style={{display:'flex', justifyContent:'space-between', padding:'4px 0', fontSize:11}}><span style={{color:'var(--muted)'}}>Loyalty (20 pts)</span><span className="mono">−₹20</span></div>
+        <div style={{display:'flex', justifyContent:'space-between', paddingTop:9, marginTop:7, borderTop:'2px solid var(--ink)'}}><span style={{fontWeight:700, fontSize:13}}>Total</span><span className="mono" style={{fontWeight:700, fontSize:15}}>₹264</span></div>
+      </div>
+      <button className="btn btn-accent btn-block" style={{padding:'14px'}}>Place order · ₹264 →</button>
+    </div>
+  </div>
+);
+ 
+const CustomerBill = ({onBack}) => (
+  <div>
+    <PageHeader title="My bill" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Download style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{background:'linear-gradient(135deg, var(--accent), #B8721A)', color:'#fff', borderRadius:18, padding:18, marginBottom:14, position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:-30, right:-30, width:140, height:140, background:'rgba(255,255,255,0.1)', borderRadius:'50%'}}></div>
+        <div style={{position:'relative'}}>
+          <div style={{fontSize:10, opacity:0.85, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em'}}>May 2026</div>
+          <div className="display" style={{fontSize:34, fontWeight:500, marginTop:4, lineHeight:1}}>₹1,284</div>
+          <div style={{fontSize:10, opacity:0.85, marginTop:5}}>20 days · avg ₹64/day</div>
+          <button className="btn" style={{background:'#fff', color:'var(--accent)', padding:'9px 14px', fontSize:11, marginTop:11}}>Pay via UPI →</button>
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Daily breakdown</div>
+      <div className="card" style={{padding:0, overflow:'hidden', marginBottom:14}}>
+        {[{d:'20 May',i:'Cow 1L + Curd',a:102},{d:'19 May',i:'Cow 1L',a:62},{d:'18 May',i:'Cow 1L + Paneer',a:182},{d:'17 May',i:'Skipped',a:0},{d:'16 May',i:'Cow 1L + Curd',a:102},{d:'15 May',i:'Cow 1L',a:62}].map((row,i)=>(
+          <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'11px 14px', borderBottom:i<5?'1px solid var(--line)':'none'}}>
+            <div><div style={{fontSize:12, fontWeight:500}}>{row.d}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{row.i}</div></div>
+            <div className="mono" style={{fontSize:12, fontWeight:600, color:row.a===0?'var(--muted)':'var(--ink)'}}>{row.a===0?'—':`₹${row.a}`}</div>
+          </div>
+        ))}
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Past invoices</div>
+      {[{m:'April 2026',d:'Paid 28 Apr',a:1842},{m:'March 2026',d:'Paid 30 Mar',a:1962}].map((p,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'11px 0', borderBottom:i===0?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:12, fontWeight:500}}>{p.m}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{p.d}</div></div>
+          <div style={{display:'flex', alignItems:'center', gap:7}}>
+            <I.Check style={{width:13, height:13, color:'var(--primary)'}}/>
+            <span className="mono" style={{fontSize:12, fontWeight:600}}>₹{p.a}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerWallet = ({onBack}) => (
+  <div>
+    <PageHeader title="Wallet" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{background:'linear-gradient(135deg, var(--ink), #2c241c)', color:'#fff', borderRadius:18, padding:18, marginBottom:14, position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:-30, right:-30, width:140, height:140, background:'rgba(255,255,255,0.06)', borderRadius:'50%'}}></div>
+        <div style={{position:'relative'}}>
+          <div style={{fontSize:10, opacity:0.7, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em'}}>Wallet balance</div>
+          <div className="display" style={{fontSize:34, fontWeight:500, marginTop:4, lineHeight:1}}>₹420</div>
+          <div style={{fontSize:10, opacity:0.75, marginTop:5}}>Auto-deduct on each delivery</div>
+        </div>
+      </div>
+      <div className="row-3" style={{marginBottom:14}}>
+        {[{l:'+₹500',c:'var(--primary)'},{l:'+₹1000',c:'var(--accent)'},{l:'+₹2000',c:'var(--blue)'}].map((t,i)=>(
+          <button key={i} style={{padding:'13px 6px', background:t.c, color:'#fff', border:'none', borderRadius:12, cursor:'pointer', fontSize:13, fontWeight:700}}>{t.l}</button>
+        ))}
+      </div>
+      <button className="btn btn-ghost btn-block" style={{marginBottom:14}}>Custom amount</button>
+      <div className="section-title" style={{marginBottom:8}}>Transactions</div>
+      {[{l:'Cow milk 1L',d:'20 May · 7:18 AM',a:-62},{l:'Cow milk 1L',d:'19 May · 7:22 AM',a:-62},{l:'Top-up via UPI',d:'18 May · 9:14 AM',a:+500},{l:'Cow milk 1L + Curd',d:'18 May · 7:20 AM',a:-102},{l:'Cow milk 1L',d:'17 May · 7:25 AM',a:-62}].map((t,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'10px 0', borderBottom:i<4?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:12, fontWeight:500}}>{t.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{t.d}</div></div>
+          <div className="mono" style={{fontSize:12, fontWeight:600, color:t.a>0?'var(--primary)':'var(--ink)'}}>{t.a>0?'+':''}₹{Math.abs(t.a)}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerOrders = ({onBack}) => (
+  <div>
+    <PageHeader title="Order history" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['All','Delivered','Pending','Skipped','Cancelled'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      {[{d:'20 May',i:'Cow 1L + Curd 200g',a:102,s:'Delivered'},{d:'19 May',i:'Cow 1L',a:62,s:'Delivered'},{d:'18 May',i:'Cow 1L + Paneer 250g',a:182,s:'Delivered'},{d:'17 May',i:'Cow 1L (Holiday)',a:0,s:'Skipped'},{d:'16 May',i:'Cow 1L + Curd',a:102,s:'Delivered'},{d:'15 May',i:'Cow 1L',a:62,s:'Delivered'},{d:'14 May',i:'Cow 1L + Ghee 500g',a:482,s:'Delivered'}].map((o,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+            <div>
+              <div style={{fontWeight:600, fontSize:13}}>{o.d}</div>
+              <div style={{fontSize:11, color:'var(--ink-soft)', marginTop:2}}>{o.i}</div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              {o.a>0 && <div className="mono" style={{fontSize:13, fontWeight:600}}>₹{o.a}</div>}
+              <span className="pill" style={{background:o.s==='Delivered'?'var(--primary-soft)':o.s==='Skipped'?'var(--bg-warm)':'var(--accent-soft)', color:o.s==='Delivered'?'var(--primary)':o.s==='Skipped'?'var(--muted)':'var(--accent)', marginTop:4}}>{o.s}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerStanding = ({onBack}) => (
+  <div>
+    <PageHeader title="Standing orders" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{padding:12, background:'var(--bg-warm)', borderRadius:12, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5, marginBottom:14, display:'flex', gap:9}}>
+        <I.Repeat style={{width:14, height:14, flexShrink:0, marginTop:1, color:'var(--ink)'}}/>
+        <span>Standing orders are auto-delivered. You can pause, skip a day, or change quantity anytime.</span>
+      </div>
+      {[{n:'Cow milk · 1L',f:'Daily',t:'6:30 AM',p:62,a:true},{n:'Curd · 200g',f:'Tue, Thu, Sat',t:'6:30 AM',p:40,a:true},{n:'Paneer · 250g',f:'Sundays',t:'7:00 AM',p:120,a:false}].map((s,i)=>(
+        <div key={i} className="card" style={{padding:13, marginBottom:8}}>
+          <div style={{display:'flex', alignItems:'center', gap:11, marginBottom:11}}>
+            <div style={{width:40, height:40, borderRadius:11, background:'var(--accent-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:17, height:17, color:'var(--accent)'}}/></div>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:600, fontSize:13}}>{s.n}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{s.f} · {s.t} · ₹{s.p}</div>
+            </div>
+            <span className="pill" style={{background:s.a?'var(--primary-soft)':'var(--bg-warm)', color:s.a?'var(--primary)':'var(--muted)'}}>{s.a?'Active':'Paused'}</span>
+          </div>
+          <div style={{display:'flex', gap:6}}>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 10px'}}>{s.a?'Pause':'Resume'}</button>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 10px'}}>Skip date</button>
+            <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 10px'}}>Modify</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerScheduled = ({onBack}) => {
+  const [date, setDate] = useState(23);
+  return (
+    <div>
+      <PageHeader title="Schedule order" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div className="card" style={{padding:14, marginBottom:14}}>
+          <div className="stat-lbl" style={{marginBottom:10}}>Pick delivery date</div>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10}}>
+            <button className="icon-btn" style={{width:28, height:28}}><I.Back style={{width:13, height:13}}/></button>
+            <div className="display" style={{fontSize:15, fontWeight:500}}>May 2026</div>
+            <button className="icon-btn" style={{width:28, height:28}}><I.ChevR style={{width:13, height:13}}/></button>
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:3, fontSize:9, color:'var(--muted)', fontWeight:600, textAlign:'center', marginBottom:6}}>
+            {['S','M','T','W','T','F','S'].map((d,i)=><div key={i}>{d}</div>)}
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:3}}>
+            {Array.from({length:35}, (_,i)=>{
+              const day = i - 3;
+              if (day<1 || day>31) return <div key={i}></div>;
+              const past = day<=20;
+              const sel = day===date;
+              return <button key={i} onClick={()=>!past && setDate(day)} style={{aspectRatio:'1', background:sel?'var(--ink)':'transparent', color:sel?'var(--bg)':past?'var(--line)':'var(--ink)', border:'none', borderRadius:8, fontSize:11, fontWeight:600, cursor:past?'default':'pointer'}}>{day}</button>;
+            })}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:14}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Order for 23 May</div>
+          {[{n:'Cow milk 1L',q:1,p:62},{n:'Paneer 250g',q:1,p:120}].map((it,i)=>(
+            <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:i===0?'1px solid var(--line)':'none'}}>
+              <div style={{width:30, height:30, borderRadius:8, background:'var(--bg-warm)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Drop style={{width:13, height:13, color:'var(--accent)'}}/></div>
+              <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{it.n}</div></div>
+              <div className="mono" style={{fontSize:12, fontWeight:600}}>₹{it.p}</div>
+            </div>
+          ))}
+        </div>
+        <button className="btn btn-accent btn-block" style={{padding:'14px'}}>Schedule for 23 May · ₹182 →</button>
+      </div>
+    </div>
+  );
+};
+ 
+const CustomerHoliday = ({onBack}) => {
+  const [marked, setMarked] = useState([22,23,24]);
+  return (
+    <div>
+      <PageHeader title="Holiday calendar" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div style={{padding:12, background:'var(--accent-soft)', borderRadius:12, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5, marginBottom:14, display:'flex', gap:9}}>
+          <I.Calendar style={{width:14, height:14, flexShrink:0, marginTop:1, color:'var(--accent)'}}/>
+          <span>Mark days you'll be away — we'll auto-skip deliveries.</span>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:14}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10}}>
+            <button className="icon-btn" style={{width:28, height:28}}><I.Back style={{width:13, height:13}}/></button>
+            <div className="display" style={{fontSize:15, fontWeight:500}}>May 2026</div>
+            <button className="icon-btn" style={{width:28, height:28}}><I.ChevR style={{width:13, height:13}}/></button>
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:3, fontSize:9, color:'var(--muted)', fontWeight:600, textAlign:'center', marginBottom:6}}>
+            {['S','M','T','W','T','F','S'].map((d,i)=><div key={i}>{d}</div>)}
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:3}}>
+            {Array.from({length:35}, (_,i)=>{
+              const day = i - 3;
+              if (day<1 || day>31) return <div key={i}></div>;
+              const past = day<=20;
+              const sel = marked.includes(day);
+              return <button key={i} onClick={()=>!past && setMarked(m=>m.includes(day)?m.filter(d=>d!==day):[...m,day])} style={{aspectRatio:'1', background:sel?'var(--rose)':'transparent', color:sel?'#fff':past?'var(--line)':'var(--ink)', border:'none', borderRadius:8, fontSize:11, fontWeight:600, cursor:past?'default':'pointer'}}>{day}</button>;
+            })}
+          </div>
+        </div>
+        <div className="section-title" style={{marginBottom:8}}>Marked holidays ({marked.length})</div>
+        {marked.map((d,i)=>(
+          <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+            <div style={{width:32, height:32, borderRadius:9, background:'var(--rose-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Calendar style={{width:14, height:14, color:'var(--rose)'}}/></div>
+            <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{d} May 2026</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>All deliveries skipped</div></div>
+            <button onClick={()=>setMarked(m=>m.filter(x=>x!==d))} className="icon-btn" style={{width:28, height:28}}><I.X style={{width:12, height:12}}/></button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+ 
+const CustomerRefer = ({onBack}) => (
+  <div>
+    <PageHeader title="Refer & earn" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{background:'linear-gradient(135deg, var(--primary), #0a3d24)', color:'#fff', borderRadius:18, padding:20, marginBottom:14, textAlign:'center', position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:-30, right:-30, width:120, height:120, background:'rgba(255,255,255,0.08)', borderRadius:'50%'}}></div>
+        <div style={{position:'relative'}}>
+          <I.Gift style={{width:38, height:38, margin:'0 auto 10px'}}/>
+          <div className="display" style={{fontSize:22, fontWeight:500, lineHeight:1.1}}>Get ₹100 wallet credit</div>
+          <div style={{fontSize:11, opacity:0.85, marginTop:6, lineHeight:1.4}}>Invite a friend. They get ₹50 off first order.<br/>You both earn together.</div>
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:12}}>
+        <div className="stat-lbl" style={{marginBottom:6}}>Your code</div>
+        <div style={{display:'flex', alignItems:'center', gap:10, padding:'12px 14px', background:'var(--bg-warm)', borderRadius:11, border:'2px dashed var(--ink)'}}>
+          <span className="mono" style={{flex:1, fontSize:18, fontWeight:700, letterSpacing:'0.08em'}}>PRIYA100</span>
+          <button className="btn btn-dark" style={{padding:'7px 12px', fontSize:11}}>Copy</button>
+        </div>
+      </div>
+      <div className="row-3" style={{marginBottom:14}}>
+        <button className="btn" style={{background:'#25D366', color:'#fff', padding:'12px 6px', fontSize:11}}><I.Whats style={{width:13, height:13}}/></button>
+        <button className="btn btn-blue" style={{padding:'12px 6px', fontSize:11}}><I.Mail style={{width:13, height:13}}/></button>
+        <button className="btn btn-ghost" style={{padding:'12px 6px', fontSize:11}}><I.Share style={{width:13, height:13}}/></button>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Your referrals</div>
+      {[{n:'Aakash V.',s:'Joined · ₹100 earned',d:'12 May'},{n:'Sneha P.',s:'Joined · ₹100 earned',d:'8 May'},{n:'Maya I.',s:'Code shared',d:'5 May'}].map((r,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+          <div className="avatar" style={{background:'var(--bg-warm)', color:'var(--ink-soft)'}}>{r.n.slice(0,2)}</div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{r.n}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{r.s} · {r.d}</div></div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const CustomerTrack = ({onBack}) => (
+  <div>
+    <PageHeader title="Track delivery" onBack={onBack}/>
+    <div style={{padding:'0 16px 24px'}}>
+      <div style={{position:'relative', height:240, background:'linear-gradient(180deg, #e8d8b8 0%, #d9c89a 100%)', borderRadius:14, overflow:'hidden', marginBottom:14}}>
+        <svg viewBox="0 0 300 240" style={{position:'absolute', inset:0, width:'100%', height:'100%'}}>
+          <path d="M 30 50 Q 80 80 100 120 T 180 160 T 270 200" stroke="var(--primary)" strokeWidth="3" fill="none" strokeDasharray="6 4"/>
+          <circle cx="30" cy="50" r="7" fill="var(--ink)"/>
+          <text x="42" y="54" fontSize="9" fontWeight="600" fill="var(--ink)">Sai Dairy</text>
+          <circle cx="270" cy="200" r="9" fill="var(--rose)" stroke="#fff" strokeWidth="2"/>
+          <text x="225" y="222" fontSize="9" fontWeight="600" fill="var(--ink)">Your home</text>
+          <circle cx="150" cy="135" r="8" fill="var(--accent)" stroke="#fff" strokeWidth="2">
+            <animate attributeName="r" values="8;11;8" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <text x="155" y="128" fontSize="9" fontWeight="700" fill="var(--ink)">Ravi · 8 min</text>
+        </svg>
+        <div style={{position:'absolute', top:12, right:12, background:'#fff', padding:'4px 9px', borderRadius:999, fontSize:10, fontWeight:600, display:'flex', alignItems:'center', gap:5}}>
+          <span className="pulse" style={{width:6, height:6, background:'var(--primary)', borderRadius:'50%'}}></span>Live
+        </div>
+      </div>
+      <div className="card" style={{padding:14, marginBottom:12}}>
+        <div style={{display:'flex', alignItems:'center', gap:12}}>
+          <div style={{width:46, height:46, borderRadius:14, background:'var(--blue)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Fraunces', fontWeight:600, fontSize:17}}>RK</div>
+          <div style={{flex:1}}>
+            <div style={{fontFamily:'Fraunces', fontWeight:500, fontSize:15}}>Ravi Kumar</div>
+            <div style={{fontSize:11, color:'var(--muted)'}}>Route A · ⭐ 4.8 · 2,184 deliveries</div>
+          </div>
+          <button className="btn btn-primary" style={{padding:'8px 11px'}}><I.Phone style={{width:12, height:12}}/></button>
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Delivery progress</div>
+      {[{l:'Picked up from dairy',d:'6:30 AM',done:true},{l:'On the way',d:'7:00 AM · current',done:true,now:true},{l:'Arriving at H-204',d:'~7:18 AM',done:false},{l:'Delivered',d:'pending',done:false}].map((s,i)=>(
+        <div key={i} style={{display:'flex', alignItems:'flex-start', gap:11, padding:'10px 0', position:'relative'}}>
+          {i<3 && <div style={{position:'absolute', left:9, top:24, width:2, height:24, background:s.done?'var(--primary)':'var(--line)'}}></div>}
+          <div style={{width:20, height:20, borderRadius:'50%', background:s.done?'var(--primary)':'var(--card)', border:`2px solid ${s.done?'var(--primary)':'var(--line)'}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{s.done && <I.Check style={{width:10, height:10, color:'#fff'}}/>}</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:12, fontWeight:s.now?700:500}}>{s.l}</div>
+            <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{s.d}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+// ============= DELIVERY AGENT =============
+const DELIVERY_MENU = [
+  {label:'Today', items:[
+    {id:'home', label:'Today route', icon:<I.Home/>, badge:'Live'},
+    {id:'route-list', label:'Stops list', icon:<I.Map/>},
+    {id:'navigate', label:'Turn-by-turn', icon:<I.Pin/>},
+  ]},
+  {label:'Operations', items:[
+    {id:'cash', label:'Cash collected', icon:<I.Coins/>, badge:'₹4.2k'},
+    {id:'customers-d', label:'My customers', icon:<I.Users/>},
+    {id:'history', label:'Past routes', icon:<I.Clock/>},
+    {id:'issues', label:'Report issue', icon:<I.AlertTri/>},
+  ]},
+  {label:'Account', items:[
+    {id:'profile-d', label:'Profile & stats', icon:<I.Star/>},
+    {id:'attendance-d', label:'Attendance', icon:<I.Calendar/>},
+    {id:'salary', label:'Salary & payouts', icon:<I.Wallet/>},
+    {id:'support-d', label:'Help', icon:<I.Help/>},
+  ]},
+];
+ 
+const DeliveryApp = () => {
+  const [screen, setScreen] = useState('home');
+  const [drawer, setDrawer] = useState(false);
+  const back = () => setScreen('home');
+  return (<>
+    <StatusBar/>
+    <Drawer open={drawer} onClose={()=>setDrawer(false)} role="delivery" items={DELIVERY_MENU} currentScreen={screen} onSelect={setScreen}/>
+    <div className="screen-body">
+      <TopBar onMenu={()=>setDrawer(true)} sub="Delivery agent" title="Route A · Live" dotted/>
+      {screen==='home' && <DeliveryHome onNav={setScreen}/>}
+      {screen==='route-list' && <DeliveryRouteList onBack={back}/>}
+      {screen==='cash' && <DeliveryCash onBack={back}/>}
+      {screen==='profile-d' && <DeliveryProfile onBack={back}/>}
+      {!['home','route-list','cash','profile-d'].includes(screen) && <Placeholder title={DELIVERY_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
+    </div>
+  </>);
+};
+ 
+const DeliveryHome = ({onNav}) => (
+  <div style={{padding:'4px 16px 24px'}}>
+    <div style={{margin:'8px 0 14px'}}>
+      <div className="greet">Wed, 20 May · 7:42 AM</div>
+      <div className="greet-name">52 of 78 <em style={{color:'var(--blue)', fontStyle:'italic', fontWeight:400}}>done.</em></div>
+    </div>
+ 
+    <div style={{background:'var(--blue)', color:'#fff', borderRadius:16, padding:16, marginBottom:12, position:'relative', overflow:'hidden'}}>
+      <div style={{position:'absolute', top:-30, right:-30, width:130, height:130, background:'rgba(255,255,255,0.07)', borderRadius:'50%'}}></div>
+      <div style={{position:'relative'}}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
+          <span style={{fontSize:10, opacity:0.85, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em'}}>Route A · Kothrud</span>
+          <span className="pulse pill" style={{background:'rgba(255,255,255,0.2)', color:'#fff'}}>● Live</span>
+        </div>
+        <div style={{height:8, background:'rgba(255,255,255,0.2)', borderRadius:999, marginBottom:6, overflow:'hidden'}}><div style={{width:'67%', height:'100%', background:'#fff', borderRadius:999}}></div></div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginTop:12, paddingTop:12, borderTop:'1px solid rgba(255,255,255,0.15)'}}>
+          {[{l:'Done',v:'52'},{l:'Left',v:'26'},{l:'Cash',v:'₹4.2k'}].map((s,i)=><div key={i}><div style={{fontSize:9, opacity:0.7, textTransform:'uppercase', fontWeight:600}}>{s.l}</div><div className="mono" style={{fontWeight:600, fontSize:13, marginTop:2}}>{s.v}</div></div>)}
+        </div>
+      </div>
+    </div>
+ 
+    <div className="section-title" style={{marginBottom:8}}>Current stop</div>
+    <div className="card" style={{padding:14, marginBottom:14, borderColor:'var(--blue)', borderWidth:2}}>
+      <div style={{display:'flex', alignItems:'center', gap:12, marginBottom:11}}>
+        <div style={{width:46, height:46, borderRadius:14, background:'var(--blue)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Fraunces', fontWeight:700, fontSize:16}}>53</div>
+        <div style={{flex:1}}>
+          <div style={{fontWeight:700, fontSize:14}}>Priya Sharma</div>
+          <div style={{fontSize:11, color:'var(--muted)', marginTop:1}}>H-204 · Cow milk 1L + Curd</div>
+        </div>
+        <button className="btn btn-primary" style={{padding:'8px 11px'}}><I.Phone style={{width:12, height:12}}/></button>
+      </div>
+      <div style={{padding:10, background:'var(--bg-warm)', borderRadius:11, fontSize:11, color:'var(--ink-soft)', marginBottom:11, display:'flex', gap:8}}>
+        <I.Pin style={{width:13, height:13, marginTop:1, flexShrink:0}}/>
+        <span>H-204, Sai Apartments, 2nd floor, Kothrud · 240m away</span>
+      </div>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', padding:'9px 11px', background:'var(--primary-soft)', borderRadius:10, marginBottom:11}}>
+        <span style={{fontSize:11, fontWeight:600, color:'var(--primary)'}}>Order total</span>
+        <span className="mono" style={{fontSize:13, fontWeight:700, color:'var(--primary)'}}>₹102 · Prepaid ✓</span>
+      </div>
+      <div style={{display:'flex', gap:7}}>
+        <button className="btn btn-primary" style={{flex:2, padding:'12px'}}><I.Check style={{width:14, height:14}}/> Mark delivered</button>
+        <button className="btn btn-ghost" style={{flex:1, padding:'12px', color:'var(--rose)', borderColor:'var(--rose-soft)'}}><I.X style={{width:14, height:14}}/> Failed</button>
+      </div>
+      <div style={{textAlign:'center', fontSize:10, color:'var(--muted)', marginTop:8}}>📸 Photo proof captured automatically</div>
+    </div>
+ 
+    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
+      <span className="section-title">Next stops</span>
+      <a onClick={()=>onNav('route-list')} style={{fontSize:11, color:'var(--blue)', fontWeight:600, cursor:'pointer'}}>All →</a>
+    </div>
+    {[{n:54,c:'Aakash Verma',h:'H-87',i:'Buffalo 500ml',a:48,paid:false},{n:55,c:'Maya Iyer',h:'H-301',i:'Cow 1L',a:62,paid:true},{n:56,c:'Rohit Mehta',h:'H-156',i:'Cow 1L + Curd',a:102,paid:false}].map((s,i)=>(
+      <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+        <div style={{width:32, height:32, borderRadius:9, background:'var(--bg-warm)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'JetBrains Mono', fontWeight:600, fontSize:12, color:'var(--ink-soft)'}}>{s.n}</div>
+        <div style={{flex:1, minWidth:0}}>
+          <div style={{fontSize:12, fontWeight:600}}>{s.c} · {s.h}</div>
+          <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{s.i}</div>
+        </div>
+        <div style={{textAlign:'right'}}>
+          <div className="mono" style={{fontSize:12, fontWeight:600}}>₹{s.a}</div>
+          <div style={{fontSize:9, color:s.paid?'var(--primary)':'var(--rose)', fontWeight:600, marginTop:1}}>{s.paid?'Prepaid':'Cash'}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+ 
+const DeliveryRouteList = ({onBack}) => (
+  <div>
+    <PageHeader title="All stops" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Map style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['All 78','Done 52','Pending 26','Failed 0'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      {[{n:51,c:'Sneha Patil',h:'F-12',a:62,s:'done'},{n:52,c:'Vikram Reddy',h:'B-44',a:102,s:'done'},{n:53,c:'Priya Sharma',h:'H-204',a:102,s:'now'},{n:54,c:'Aakash Verma',h:'H-87',a:48,s:'pending'},{n:55,c:'Maya Iyer',h:'H-301',a:62,s:'pending'},{n:56,c:'Rohit Mehta',h:'H-156',a:102,s:'pending'},{n:57,c:'Anita Joshi',h:'A-22',a:62,s:'pending'}].map((s,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11, opacity:s.s==='done'?0.6:1, borderColor:s.s==='now'?'var(--blue)':'var(--line)', borderWidth:s.s==='now'?2:1}}>
+          <div style={{width:32, height:32, borderRadius:9, background:s.s==='done'?'var(--primary)':s.s==='now'?'var(--blue)':'var(--bg-warm)', color:s.s==='done'||s.s==='now'?'#fff':'var(--ink-soft)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'JetBrains Mono', fontWeight:600, fontSize:12}}>{s.s==='done'?<I.Check style={{width:14, height:14}}/>:s.n}</div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{s.c}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{s.h}</div></div>
+          <div className="mono" style={{fontSize:12, fontWeight:600}}>₹{s.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const DeliveryCash = ({onBack}) => (
+  <div>
+    <PageHeader title="Cash collected" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{background:'linear-gradient(135deg, var(--primary), #0a3d24)', color:'#fff', borderRadius:18, padding:18, marginBottom:14, position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:-30, right:-30, width:130, height:130, background:'rgba(255,255,255,0.06)', borderRadius:'50%'}}></div>
+        <div style={{position:'relative'}}>
+          <div style={{fontSize:10, opacity:0.75, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em'}}>Today's cash · in hand</div>
+          <div className="display" style={{fontSize:34, fontWeight:500, marginTop:4, lineHeight:1}}>₹4,240</div>
+          <div style={{fontSize:11, opacity:0.85, marginTop:6}}>From 28 cash deliveries</div>
+        </div>
+      </div>
+      <button className="btn btn-dark btn-block" style={{marginBottom:14, padding:'14px'}}>
+        <I.Check style={{width:14, height:14}}/> Mark as deposited at shop
+      </button>
+      <div className="section-title" style={{marginBottom:8}}>Today's collections</div>
+      {[{c:'Aakash Verma',h:'H-87',a:48,t:'7:38 AM'},{c:'Mohan Kale',h:'H-220',a:182,t:'7:32 AM'},{c:'Suresh Pawar',h:'H-115',a:124,t:'7:28 AM'},{c:'Rajesh Naik',h:'H-95',a:62,t:'7:22 AM'},{c:'Kavita Iyer',h:'H-78',a:102,t:'7:18 AM'}].map((c,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'10px 0', borderBottom:i<4?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:12, fontWeight:500}}>{c.c} · {c.h}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{c.t}</div></div>
+          <div className="mono" style={{fontSize:12, fontWeight:600, color:'var(--primary)'}}>+₹{c.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+const DeliveryProfile = ({onBack}) => (
+  <div>
+    <PageHeader title="My profile" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="card" style={{padding:18, marginBottom:14, textAlign:'center'}}>
+        <div style={{width:70, height:70, margin:'0 auto 12px', borderRadius:20, background:'var(--blue)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Fraunces', fontWeight:600, fontSize:24}}>RK</div>
+        <div style={{fontFamily:'Fraunces', fontWeight:500, fontSize:19}}>Ravi Kumar</div>
+        <div style={{fontSize:11, color:'var(--muted)', marginTop:2}}>Route A · Sai Dairy · Since Mar 2023</div>
+        <div style={{display:'inline-flex', alignItems:'center', gap:5, padding:'5px 11px', background:'var(--accent-soft)', borderRadius:999, marginTop:9}}>
+          <I.Star style={{width:11, height:11, color:'var(--accent)'}}/>
+          <span style={{fontSize:11, fontWeight:700, color:'var(--accent)'}}>4.8 rating · 124 reviews</span>
+        </div>
+      </div>
+      <div className="row-2" style={{marginBottom:8}}>
+        <div className="stat-cell"><div className="stat-lbl">Lifetime</div><div className="stat-val">2,184</div><div style={{fontSize:10, color:'var(--muted)', marginTop:3}}>deliveries</div></div>
+        <div className="stat-cell"><div className="stat-lbl">On-time</div><div className="stat-val">97%</div><div style={{fontSize:10, color:'var(--muted)', marginTop:3}}>last 30 days</div></div>
+      </div>
+      <div className="row-2" style={{marginBottom:14}}>
+        <div className="stat-cell"><div className="stat-lbl">This month</div><div className="stat-val">312</div><div style={{fontSize:10, color:'var(--muted)', marginTop:3}}>deliveries</div></div>
+        <div className="stat-cell"><div className="stat-lbl">Cash today</div><div className="stat-val">₹4.2k</div><div style={{fontSize:10, color:'var(--muted)', marginTop:3}}>28 collections</div></div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Recent feedback</div>
+      {[{n:'Priya S.',r:5,c:'Always on time, very polite!'},{n:'Vikram R.',r:5,c:'Quick & friendly service.'},{n:'Maya I.',r:4,c:'Good, sometimes 10 min late.'}].map((f,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5}}>
+            <span style={{fontSize:12, fontWeight:600}}>{f.n}</span>
+            <div style={{display:'flex', gap:1}}>{Array.from({length:5}).map((_,j)=><I.Star key={j} style={{width:11, height:11, color:j<f.r?'var(--accent)':'var(--line)'}}/>)}</div>
+          </div>
+          <div style={{fontSize:11, color:'var(--ink-soft)'}}>"{f.c}"</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+// ============= MAIN APP =============
+const App = () => {
+  const [loggedIn, setLoggedIn] = useState({super:false, owner:false, customer:false, delivery:false});
+  const allLoggedIn = Object.values(loggedIn).every(v=>v);
+ 
+  return (
+    <div className="container">
+      <div className="intro">
+        <div className="demo-label">Enterprise demo · production preview</div>
+        <h1>One app, <em>four worlds.</em></h1>
+        <p>Doodhwala is a multi-tenant dairy & daily-essentials platform. Same phone, same number — your role is detected automatically. Tap the hamburger menu in any phone to explore every feature. Invoices generate by date range. Customers order ten different ways. Nothing is mocked behind the scenes.</p>
+        {!allLoggedIn && (
+          <button className="btn btn-dark" onClick={()=>setLoggedIn({super:true, owner:true, customer:true, delivery:true})} style={{marginTop:18, padding:'12px 22px'}}>
+            Skip login · open all four →
+          </button>
+        )}
+      </div>
+ 
+      <div className="phones-stage">
+        {[
+          {role:'super', label:'Platform Admin', sub:'admin@doodhwala.in', tint:'#1A1410', Comp:SuperAdmin},
+          {role:'owner', label:'Owner', sub:'Rajesh · Sai Dairy', tint:'var(--primary)', Comp:OwnerApp},
+          {role:'customer', label:'Customer', sub:'Priya Sharma', tint:'var(--accent)', Comp:CustomerApp},
+          {role:'delivery', label:'Delivery agent', sub:'Ravi Kumar', tint:'var(--blue)', Comp:DeliveryApp},
+        ].map(p => (
+          <div key={p.role}>
+            <div style={{textAlign:'center', marginBottom:12}}>
+              <div style={{display:'inline-flex', alignItems:'center', gap:7, padding:'6px 12px', borderRadius:999, background:p.tint, color:'#fff', fontSize:11, fontWeight:700, letterSpacing:'0.04em', textTransform:'uppercase'}}>{p.label}</div>
+              <div style={{fontSize:11, color:'var(--muted)', marginTop:5, fontWeight:500}}>{p.sub}</div>
+            </div>
+            <div className="phone">
+              <div className="phone-screen">
+                <div className="phone-notch"></div>
+                {loggedIn[p.role] ? <p.Comp/> : (<><StatusBar/><Login role={p.role} onLogin={()=>setLoggedIn(s=>({...s, [p.role]:true}))}/></>)}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+ 
+      <div style={{maxWidth:900, margin:'0 auto', padding:'20px 24px', background:'var(--card)', border:'1px solid var(--line)', borderRadius:18}}>
+        <div className="display" style={{fontSize:22, fontWeight:500, marginBottom:12}}>How to explore this demo</div>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:14, fontSize:13, lineHeight:1.6, color:'var(--ink-soft)'}}>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>1. Tap any hamburger ☰</div>
+            Every phone has a full drawer menu with all features grouped logically — Today, Customers, Catalog, Money, Reports, Settings.
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>2. Try Owner → Invoices</div>
+            See the "Generate by date range" flow — scope, date pickers, GST options, send via WhatsApp / SMS / Email / Print, then preview the actual tax invoice.
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>3. Customer has 10 order ways</div>
+            One-time, standing, scheduled, bulk, quick reorder, wallet prepaid, postpaid bill, COD, UPI prepaid, family group — replacing the old "subscription" word entirely.
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>4. Delivery agent loop</div>
+            Live route progress, current stop card with delivered/failed buttons + auto photo proof, end-of-route cash reconciliation with "mark as deposited".
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+ 
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
