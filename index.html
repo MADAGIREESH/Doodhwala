@@ -92,7 +92,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div id="root"></div>
 <script type="text/babel" data-presets="react">
 const {useState} = React;
- 
+
 // ============= ICONS =============
 const I = {
   Wifi:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>,
@@ -154,9 +154,9 @@ const I = {
   Briefcase:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
   AlertTri:(p)=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
 };
- 
+
 const StatusBar = () => (<div className="status-bar"><span>9:41</span><div className="status-icons"><I.Cell/><I.Wifi/><I.Battery/></div></div>);
- 
+
 // ============= SHARED COMPONENTS =============
 const Drawer = ({open, onClose, role, items, currentScreen, onSelect}) => {
   const m = {super:{n:'Platform Admin', s:'admin@doodhwala.in', t:'#1A1410', i:'PA'}, owner:{n:'Sai Dairy Farm', s:'Rajesh · Owner', t:'var(--primary)', i:'SD'}, customer:{n:'Priya Sharma', s:'+91 98765 43210', t:'var(--accent)', i:'PS'}, delivery:{n:'Ravi Kumar', s:'Route A · Sai Dairy', t:'var(--blue)', i:'RK'}}[role];
@@ -200,7 +200,7 @@ const Drawer = ({open, onClose, role, items, currentScreen, onSelect}) => {
     </div>
   </>);
 };
- 
+
 const Login = ({onLogin, role}) => {
   const [step, setStep] = useState('phone');
   const m = {super:{l:'Platform Admin', t:'#1A1410'}, owner:{l:'Owner', t:'var(--primary)'}, customer:{l:'Customer', t:'var(--accent)'}, delivery:{l:'Delivery', t:'var(--blue)'}}[role];
@@ -245,7 +245,7 @@ const Login = ({onLogin, role}) => {
     </div>
   );
 };
- 
+
 const PageHeader = ({title, onBack, right}) => (
   <div className="page-header">
     {onBack && <button className="icon-btn" onClick={onBack} style={{width:32, height:32}}><I.Back style={{width:15, height:15}}/></button>}
@@ -263,7 +263,7 @@ const TopBar = ({onMenu, title, sub, dotted}) => (
     <button className="icon-btn">{dotted && <span className="dot"></span>}<I.Bell style={{width:17, height:17}}/></button>
   </div>
 );
- 
+
 const Placeholder = ({title, onBack}) => (
   <div>
     <PageHeader title={title||'Section'} onBack={onBack}/>
@@ -274,7 +274,7 @@ const Placeholder = ({title, onBack}) => (
     </div>
   </div>
 );
- 
+
 // ============= SUPER ADMIN =============
 const SUPER_MENU = [
   {label:'Overview', items:[
@@ -303,7 +303,7 @@ const SUPER_MENU = [
     {id:'i18n', label:'Languages & regions', icon:<I.Globe/>},
   ]},
 ];
- 
+
 const SuperAdmin = () => {
   const [screen, setScreen] = useState('home');
   const [drawer, setDrawer] = useState(false);
@@ -426,7 +426,7 @@ const SuperAudit = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 // ============= OWNER MENU =============
 const OWNER_MENU = [
   {label:'Today', items:[
@@ -438,8 +438,10 @@ const OWNER_MENU = [
   {label:'Customers', items:[
     {id:'customers', label:'All customers', icon:<I.Users/>, badge:'284'},
     {id:'add-customer', label:'Add new', icon:<I.Plus/>},
+    {id:'payment-terms', label:'Payment terms & credit', icon:<I.Crown/>, badge:'New'},
     {id:'standing', label:'Standing orders', icon:<I.Repeat/>},
     {id:'dues', label:'Pending dues', icon:<I.AlertTri/>, badge:'12'},
+    {id:'complaints', label:'Complaints & issues', icon:<I.AlertTri/>, badge:'4'},
     {id:'ledgers', label:'Customer ledgers', icon:<I.FileText/>},
   ]},
   {label:'Catalog', items:[
@@ -466,13 +468,16 @@ const OWNER_MENU = [
   {label:'Operations', items:[
     {id:'agents-mgmt', label:'Delivery agents', icon:<I.Truck/>},
     {id:'attendance', label:'Attendance', icon:<I.Calendar/>},
+    {id:'agent-leave', label:'Agent leave & swap', icon:<I.Refresh/>, badge:'1'},
+    {id:'blackout', label:'Holiday & closures', icon:<I.Calendar/>},
     {id:'salaries', label:'Salaries', icon:<I.Wallet/>},
     {id:'staff', label:'Staff & roles', icon:<I.Shield/>},
   ]},
   {label:'Engage', items:[
+    {id:'announce', label:'Announcements', icon:<I.Megaphone/>, badge:'Hot'},
     {id:'promos', label:'Promotions & coupons', icon:<I.Gift/>},
     {id:'loyalty', label:'Loyalty points', icon:<I.Star/>},
-    {id:'broadcast', label:'WhatsApp broadcast', icon:<I.Megaphone/>},
+    {id:'broadcast', label:'WhatsApp broadcast', icon:<I.Whats/>},
     {id:'feedback', label:'Customer feedback', icon:<I.Star/>},
   ]},
   {label:'Reports', items:[
@@ -487,7 +492,7 @@ const OWNER_MENU = [
     {id:'help', label:'Help & support', icon:<I.Help/>},
   ]},
 ];
- 
+
 const OwnerApp = () => {
   const [screen, setScreen] = useState('home');
   const [drawer, setDrawer] = useState(false);
@@ -512,12 +517,18 @@ const OwnerApp = () => {
       {screen==='stock' && <OwnerStock onBack={back}/>}
       {screen==='promos' && <OwnerPromos onBack={back}/>}
       {screen==='pnl' && <OwnerPnL onBack={back}/>}
-      {!['home','customers','customer-detail','products','invoices','invoice-gen','invoice-preview','routes','reports','expenses','dues','create-order','stock','promos','pnl'].includes(screen) && <Placeholder title={OWNER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
+      {screen==='payment-terms' && <OwnerPaymentTerms onBack={back}/>}
+      {screen==='announce' && <OwnerAnnounce onBack={back} onCompose={()=>setScreen('announce-compose')}/>}
+      {screen==='announce-compose' && <OwnerAnnounceCompose onBack={()=>setScreen('announce')}/>}
+      {screen==='complaints' && <OwnerComplaints onBack={back}/>}
+      {screen==='blackout' && <OwnerBlackout onBack={back}/>}
+      {screen==='agent-leave' && <OwnerAgentLeave onBack={back}/>}
+      {!['home','customers','customer-detail','products','invoices','invoice-gen','invoice-preview','routes','reports','expenses','dues','create-order','stock','promos','pnl','payment-terms','announce','announce-compose','complaints','blackout','agent-leave'].includes(screen) && <Placeholder title={OWNER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
     </div>
     {screen==='home' && <div className="fab" onClick={()=>setScreen('create-order')}><I.Plus style={{width:22, height:22}}/></div>}
   </>);
 };
- 
+
 const OwnerHome = ({onNav}) => (
   <div style={{padding:'4px 16px 24px'}}>
     <div style={{margin:'8px 0 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
@@ -545,7 +556,7 @@ const OwnerHome = ({onNav}) => (
         </button>
       ))}
     </div>
-    <div onClick={()=>onNav('stock')} className="card" style={{padding:12, marginBottom:14, background:'var(--rose-soft)', borderColor:'color-mix(in srgb, var(--rose) 25%, transparent)', cursor:'pointer'}}>
+    <div onClick={()=>onNav('stock')} className="card" style={{padding:12, marginBottom:8, background:'var(--rose-soft)', borderColor:'color-mix(in srgb, var(--rose) 25%, transparent)', cursor:'pointer'}}>
       <div style={{display:'flex', alignItems:'center', gap:10}}>
         <I.AlertTri style={{width:18, height:18, color:'var(--rose)'}}/>
         <div style={{flex:1}}>
@@ -553,6 +564,16 @@ const OwnerHome = ({onNav}) => (
           <div style={{fontSize:10, color:'var(--ink-soft)', marginTop:1}}>Paneer · Butter · Ghee</div>
         </div>
         <I.ChevR style={{width:14, height:14, color:'var(--rose)'}}/>
+      </div>
+    </div>
+    <div onClick={()=>onNav('announce')} className="card" style={{padding:12, marginBottom:14, background:'linear-gradient(135deg, var(--accent), #B8721A)', borderColor:'transparent', color:'#fff', cursor:'pointer'}}>
+      <div style={{display:'flex', alignItems:'center', gap:10}}>
+        <I.Megaphone style={{width:18, height:18}}/>
+        <div style={{flex:1}}>
+          <div style={{fontSize:12, fontWeight:700}}>Send an announcement</div>
+          <div style={{fontSize:10, opacity:0.9, marginTop:1}}>Offers, holiday notices, price changes</div>
+        </div>
+        <I.ChevR style={{width:14, height:14}}/>
       </div>
     </div>
     <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
@@ -577,7 +598,7 @@ const OwnerHome = ({onNav}) => (
     ))}
   </div>
 );
- 
+
 const OwnerCustomers = ({onBack, onOpen}) => (
   <div>
     <PageHeader title="Customers" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -605,7 +626,7 @@ const OwnerCustomers = ({onBack, onOpen}) => (
     </div>
   </div>
 );
- 
+
 const OwnerCustomerDetail = ({onBack}) => (
   <div>
     <PageHeader title="Customer profile" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Edit style={{width:14, height:14}}/></button>}/>
@@ -628,6 +649,23 @@ const OwnerCustomerDetail = ({onBack}) => (
         <div className="stat-cell"><div className="stat-lbl">Lifetime</div><div className="stat-val" style={{fontSize:17}}>₹84k</div></div>
         <div className="stat-cell"><div className="stat-lbl">May bill</div><div className="stat-val" style={{fontSize:17}}>₹1,284</div></div>
         <div className="stat-cell"><div className="stat-lbl">Due</div><div className="stat-val" style={{fontSize:17, color:'var(--primary)'}}>₹0</div></div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Payment terms & credit</div>
+      <div className="card" style={{padding:13, marginBottom:14, background:'var(--primary-soft)', borderColor:'color-mix(in srgb, var(--primary) 25%, transparent)'}}>
+        <div style={{display:'flex', alignItems:'center', gap:11, marginBottom:11}}>
+          <div style={{width:38, height:38, borderRadius:11, background:'var(--primary)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Crown style={{width:17, height:17, color:'#fff'}}/></div>
+          <div style={{flex:1}}>
+            <div style={{fontWeight:700, fontSize:13, color:'var(--primary)'}}>Monthly Postpaid</div>
+            <div style={{fontSize:10, color:'var(--ink-soft)', marginTop:1}}>Pays once a month · trusted customer</div>
+          </div>
+          <span className="pill" style={{background:'var(--primary)', color:'#fff'}}>★ Tier 1</span>
+        </div>
+        <div className="row-3" style={{paddingTop:10, borderTop:'1px dashed color-mix(in srgb, var(--primary) 30%, transparent)'}}>
+          <div><div style={{fontSize:9, color:'var(--ink-soft)', fontWeight:600, textTransform:'uppercase'}}>Credit limit</div><div className="mono" style={{fontSize:12, fontWeight:700, color:'var(--primary)'}}>₹3,000</div></div>
+          <div><div style={{fontSize:9, color:'var(--ink-soft)', fontWeight:600, textTransform:'uppercase'}}>Used</div><div className="mono" style={{fontSize:12, fontWeight:700, color:'var(--primary)'}}>₹1,284</div></div>
+          <div><div style={{fontSize:9, color:'var(--ink-soft)', fontWeight:600, textTransform:'uppercase'}}>Score</div><div className="mono" style={{fontSize:12, fontWeight:700, color:'var(--primary)'}}>92/100</div></div>
+        </div>
+        <button className="btn btn-ghost btn-block" style={{marginTop:11, padding:'8px', fontSize:11, background:'#fff', borderColor:'var(--primary)'}}>Change to daily/weekly/prepaid →</button>
       </div>
       <div className="section-title" style={{marginBottom:8}}>Standing order</div>
       <div className="card" style={{padding:12, marginBottom:14}}>
@@ -655,7 +693,7 @@ const OwnerCustomerDetail = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerProducts = ({onBack}) => (
   <div>
     <PageHeader title="Products" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -680,7 +718,7 @@ const OwnerProducts = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerInvoices = ({onBack, onGen}) => (
   <div>
     <PageHeader title="Invoices" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}} onClick={onGen}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -721,7 +759,7 @@ const OwnerInvoices = ({onBack, onGen}) => (
     </div>
   </div>
 );
- 
+
 const OwnerInvoiceGen = ({onBack, onPreview}) => {
   const [scope, setScope] = useState('all');
   const [send, setSend] = useState(['whatsapp']);
@@ -782,7 +820,7 @@ const OwnerInvoiceGen = ({onBack, onPreview}) => {
     </div>
   );
 };
- 
+
 const OwnerInvoicePreview = ({onBack}) => (
   <div>
     <PageHeader title="Invoice preview" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Share style={{width:14, height:14}}/></button>}/>
@@ -849,7 +887,7 @@ const OwnerInvoicePreview = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerRoutes = ({onBack}) => (
   <div>
     <PageHeader title="Routes" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -880,7 +918,7 @@ const OwnerRoutes = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerReports = ({onBack}) => (
   <div>
     <PageHeader title="Reports" onBack={onBack}/>
@@ -897,7 +935,7 @@ const OwnerReports = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerExpenses = ({onBack}) => (
   <div>
     <PageHeader title="Expenses" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -917,7 +955,7 @@ const OwnerExpenses = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerDues = ({onBack}) => (
   <div>
     <PageHeader title="Pending dues" onBack={onBack}/>
@@ -947,7 +985,7 @@ const OwnerDues = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerCreateOrder = ({onBack}) => (
   <div>
     <PageHeader title="Place order" onBack={onBack}/>
@@ -1002,7 +1040,7 @@ const OwnerCreateOrder = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerStock = ({onBack}) => (
   <div>
     <PageHeader title="Stock & inventory" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -1029,7 +1067,7 @@ const OwnerStock = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerPromos = ({onBack}) => (
   <div>
     <PageHeader title="Promotions" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -1050,7 +1088,7 @@ const OwnerPromos = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const OwnerPnL = ({onBack}) => (
   <div>
     <PageHeader title="Profit & loss" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Download style={{width:14, height:14}}/></button>}/>
@@ -1077,7 +1115,7 @@ const OwnerPnL = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 // ============= CUSTOMER MENU =============
 const CUSTOMER_MENU = [
   {label:'Shop', items:[
@@ -1095,6 +1133,7 @@ const CUSTOMER_MENU = [
     {id:'orders', label:'Order history', icon:<I.Package/>},
     {id:'track', label:'Track delivery', icon:<I.Map/>, badge:'Live'},
     {id:'skip', label:'Skip a delivery', icon:<I.Calendar/>},
+    {id:'report-issue', label:'Report a problem', icon:<I.AlertTri/>},
     {id:'returns-c', label:'Returns', icon:<I.Refresh/>},
   ]},
   {label:'Money', items:[
@@ -1108,7 +1147,8 @@ const CUSTOMER_MENU = [
     {id:'profile', label:'Profile', icon:<I.Users/>},
     {id:'addresses', label:'Addresses', icon:<I.Pin/>},
     {id:'holiday', label:'Holiday calendar', icon:<I.Calendar/>},
-    {id:'notifs-c', label:'Notifications', icon:<I.Bell/>},
+    {id:'family-members', label:'Family members', icon:<I.Users/>},
+    {id:'notifs-c', label:'Notifications & offers', icon:<I.Bell/>, badge:'3'},
     {id:'language', label:'Language', icon:<I.Globe/>},
   ]},
   {label:'More', items:[
@@ -1119,7 +1159,7 @@ const CUSTOMER_MENU = [
     {id:'agent-c', label:'About your agent', icon:<I.Truck/>},
   ]},
 ];
- 
+
 const CustomerApp = () => {
   const [screen, setScreen] = useState('home');
   const [drawer, setDrawer] = useState(false);
@@ -1140,16 +1180,27 @@ const CustomerApp = () => {
       {screen==='holiday' && <CustomerHoliday onBack={back}/>}
       {screen==='refer' && <CustomerRefer onBack={back}/>}
       {screen==='track' && <CustomerTrack onBack={back}/>}
-      {!['home','categories','cart','bill','wallet','orders','standing-orders','scheduled','holiday','refer','track'].includes(screen) && <Placeholder title={CUSTOMER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
+      {screen==='notifs-c' && <CustomerNotifications onBack={back}/>}
+      {screen==='report-issue' && <CustomerReportIssue onBack={back}/>}
+      {screen==='family-members' && <CustomerFamily onBack={back}/>}
+      {!['home','categories','cart','bill','wallet','orders','standing-orders','scheduled','holiday','refer','track','notifs-c','report-issue','family-members'].includes(screen) && <Placeholder title={CUSTOMER_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
     </div>
   </>);
 };
- 
+
 const CustomerHome = ({onNav}) => (
   <div style={{padding:'4px 16px 24px'}}>
     <div style={{margin:'8px 0 14px'}}>
       <div className="greet">Wed, 20 May</div>
       <div className="greet-name">What'll it be<br/><em style={{color:'var(--accent)', fontStyle:'italic', fontWeight:400}}>tomorrow?</em></div>
+    </div>
+    <div onClick={()=>onNav('notifs-c')} className="card" style={{padding:11, marginBottom:10, background:'var(--ink)', color:'#fff', borderColor:'var(--ink)', cursor:'pointer', display:'flex', alignItems:'center', gap:10}}>
+      <div style={{width:32, height:32, borderRadius:9, background:'var(--accent)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}><I.Gift style={{width:15, height:15, color:'#fff'}}/></div>
+      <div style={{flex:1, minWidth:0}}>
+        <div style={{fontSize:11, fontWeight:700}}>🎉 20% off all Ghee · this week</div>
+        <div style={{fontSize:10, opacity:0.7, marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>From Sai Dairy · code GHEE20</div>
+      </div>
+      <span className="pill" style={{background:'var(--accent)', color:'#fff'}}>3 new</span>
     </div>
     <div onClick={()=>onNav('track')} className="card" style={{padding:12, marginBottom:14, background:'var(--accent-soft)', borderColor:'color-mix(in srgb, var(--accent) 25%, transparent)', display:'flex', alignItems:'center', gap:11, cursor:'pointer'}}>
       <div style={{width:36, height:36, background:'var(--accent)', borderRadius:11, display:'flex', alignItems:'center', justifyContent:'center'}}><I.Truck style={{width:16, height:16, color:'#fff'}}/></div>
@@ -1196,7 +1247,7 @@ const CustomerHome = ({onNav}) => (
     </div>
   </div>
 );
- 
+
 const CustomerCategories = ({onBack}) => (
   <div>
     <PageHeader title="Browse" onBack={onBack}/>
@@ -1211,7 +1262,7 @@ const CustomerCategories = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerCart = ({onBack}) => (
   <div>
     <PageHeader title="Your cart" onBack={onBack}/>
@@ -1259,7 +1310,7 @@ const CustomerCart = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerBill = ({onBack}) => (
   <div>
     <PageHeader title="My bill" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Download style={{width:14, height:14}}/></button>}/>
@@ -1295,7 +1346,7 @@ const CustomerBill = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerWallet = ({onBack}) => (
   <div>
     <PageHeader title="Wallet" onBack={onBack}/>
@@ -1324,7 +1375,7 @@ const CustomerWallet = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerOrders = ({onBack}) => (
   <div>
     <PageHeader title="Order history" onBack={onBack}/>
@@ -1347,7 +1398,7 @@ const CustomerOrders = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerStanding = ({onBack}) => (
   <div>
     <PageHeader title="Standing orders" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
@@ -1376,7 +1427,7 @@ const CustomerStanding = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerScheduled = ({onBack}) => {
   const [date, setDate] = useState(23);
   return (
@@ -1418,7 +1469,7 @@ const CustomerScheduled = ({onBack}) => {
     </div>
   );
 };
- 
+
 const CustomerHoliday = ({onBack}) => {
   const [marked, setMarked] = useState([22,23,24]);
   return (
@@ -1460,7 +1511,7 @@ const CustomerHoliday = ({onBack}) => {
     </div>
   );
 };
- 
+
 const CustomerRefer = ({onBack}) => (
   <div>
     <PageHeader title="Refer & earn" onBack={onBack}/>
@@ -1495,7 +1546,7 @@ const CustomerRefer = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const CustomerTrack = ({onBack}) => (
   <div>
     <PageHeader title="Track delivery" onBack={onBack}/>
@@ -1540,13 +1591,14 @@ const CustomerTrack = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 // ============= DELIVERY AGENT =============
 const DELIVERY_MENU = [
   {label:'Today', items:[
     {id:'home', label:'Today route', icon:<I.Home/>, badge:'Live'},
     {id:'route-list', label:'Stops list', icon:<I.Map/>},
     {id:'navigate', label:'Turn-by-turn', icon:<I.Pin/>},
+    {id:'announce-d', label:'Announcements', icon:<I.Megaphone/>, badge:'2'},
   ]},
   {label:'Operations', items:[
     {id:'cash', label:'Cash collected', icon:<I.Coins/>, badge:'₹4.2k'},
@@ -1557,11 +1609,12 @@ const DELIVERY_MENU = [
   {label:'Account', items:[
     {id:'profile-d', label:'Profile & stats', icon:<I.Star/>},
     {id:'attendance-d', label:'Attendance', icon:<I.Calendar/>},
+    {id:'leave-request', label:'Request leave', icon:<I.Calendar/>},
     {id:'salary', label:'Salary & payouts', icon:<I.Wallet/>},
     {id:'support-d', label:'Help', icon:<I.Help/>},
   ]},
 ];
- 
+
 const DeliveryApp = () => {
   const [screen, setScreen] = useState('home');
   const [drawer, setDrawer] = useState(false);
@@ -1575,18 +1628,29 @@ const DeliveryApp = () => {
       {screen==='route-list' && <DeliveryRouteList onBack={back}/>}
       {screen==='cash' && <DeliveryCash onBack={back}/>}
       {screen==='profile-d' && <DeliveryProfile onBack={back}/>}
-      {!['home','route-list','cash','profile-d'].includes(screen) && <Placeholder title={DELIVERY_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
+      {screen==='announce-d' && <DeliveryAnnouncements onBack={back}/>}
+      {screen==='issues' && <DeliveryReportIssue onBack={back}/>}
+      {!['home','route-list','cash','profile-d','announce-d','issues'].includes(screen) && <Placeholder title={DELIVERY_MENU.flatMap(s=>s.items).find(i=>i.id===screen)?.label} onBack={back}/>}
     </div>
   </>);
 };
- 
+
 const DeliveryHome = ({onNav}) => (
   <div style={{padding:'4px 16px 24px'}}>
     <div style={{margin:'8px 0 14px'}}>
       <div className="greet">Wed, 20 May · 7:42 AM</div>
       <div className="greet-name">52 of 78 <em style={{color:'var(--blue)', fontStyle:'italic', fontWeight:400}}>done.</em></div>
     </div>
- 
+
+    <div onClick={()=>onNav('announce-d')} className="card" style={{padding:11, marginBottom:12, background:'var(--rose-soft)', borderColor:'color-mix(in srgb, var(--rose) 25%, transparent)', cursor:'pointer', display:'flex', alignItems:'center', gap:10}}>
+      <div style={{width:30, height:30, borderRadius:9, background:'var(--rose)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}><I.Megaphone style={{width:14, height:14, color:'#fff'}}/></div>
+      <div style={{flex:1, minWidth:0}}>
+        <div style={{fontSize:11, fontWeight:700}}>⚠️ Paneer stock low — only 8 left</div>
+        <div style={{fontSize:10, color:'var(--ink-soft)', marginTop:1}}>From owner · 1h ago</div>
+      </div>
+      <span className="pill" style={{background:'var(--rose)', color:'#fff'}}>2 new</span>
+    </div>
+
     <div style={{background:'var(--blue)', color:'#fff', borderRadius:16, padding:16, marginBottom:12, position:'relative', overflow:'hidden'}}>
       <div style={{position:'absolute', top:-30, right:-30, width:130, height:130, background:'rgba(255,255,255,0.07)', borderRadius:'50%'}}></div>
       <div style={{position:'relative'}}>
@@ -1600,7 +1664,7 @@ const DeliveryHome = ({onNav}) => (
         </div>
       </div>
     </div>
- 
+
     <div className="section-title" style={{marginBottom:8}}>Current stop</div>
     <div className="card" style={{padding:14, marginBottom:14, borderColor:'var(--blue)', borderWidth:2}}>
       <div style={{display:'flex', alignItems:'center', gap:12, marginBottom:11}}>
@@ -1625,7 +1689,7 @@ const DeliveryHome = ({onNav}) => (
       </div>
       <div style={{textAlign:'center', fontSize:10, color:'var(--muted)', marginTop:8}}>📸 Photo proof captured automatically</div>
     </div>
- 
+
     <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
       <span className="section-title">Next stops</span>
       <a onClick={()=>onNav('route-list')} style={{fontSize:11, color:'var(--blue)', fontWeight:600, cursor:'pointer'}}>All →</a>
@@ -1645,7 +1709,7 @@ const DeliveryHome = ({onNav}) => (
     ))}
   </div>
 );
- 
+
 const DeliveryRouteList = ({onBack}) => (
   <div>
     <PageHeader title="All stops" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Map style={{width:14, height:14}}/></button>}/>
@@ -1661,7 +1725,7 @@ const DeliveryRouteList = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const DeliveryCash = ({onBack}) => (
   <div>
     <PageHeader title="Cash collected" onBack={onBack}/>
@@ -1687,7 +1751,7 @@ const DeliveryCash = ({onBack}) => (
     </div>
   </div>
 );
- 
+
 const DeliveryProfile = ({onBack}) => (
   <div>
     <PageHeader title="My profile" onBack={onBack}/>
@@ -1722,25 +1786,585 @@ const DeliveryProfile = ({onBack}) => (
     </div>
   </div>
 );
- 
-// ============= MAIN APP =============
+
+// ============= NEW FEATURE SCREENS =============
+
+// OWNER: Payment terms management
+const OwnerPaymentTerms = ({onBack}) => {
+  const [tier, setTier] = useState('monthly');
+  return (
+    <div>
+      <PageHeader title="Payment terms & credit" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div style={{padding:12, background:'var(--bg-warm)', borderRadius:12, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5, marginBottom:14, display:'flex', gap:9}}>
+          <I.Crown style={{width:14, height:14, flexShrink:0, marginTop:1, color:'var(--primary)'}}/>
+          <span>Decide how each customer pays you. Trusted ones get monthly credit. New ones start on prepaid or daily.</span>
+        </div>
+        <div className="row-2" style={{marginBottom:14}}>
+          <div className="stat-cell"><div className="stat-lbl">Monthly trusted</div><div className="stat-val" style={{color:'var(--primary)'}}>198</div></div>
+          <div className="stat-cell"><div className="stat-lbl">Daily/prepaid</div><div className="stat-val">86</div></div>
+        </div>
+        <div className="chips" style={{marginBottom:12}}>
+          {[{id:'monthly',l:'Monthly 198'},{id:'weekly',l:'Weekly 24'},{id:'daily',l:'Daily 38'},{id:'prepaid',l:'Prepaid 24'},{id:'blocked',l:'Blocked 4'}].map(t=>(
+            <span key={t.id} onClick={()=>setTier(t.id)} className={`chip ${tier===t.id?'on':''}`}>{t.l}</span>
+          ))}
+        </div>
+        <div className="section-title" style={{marginBottom:8}}>{tier==='monthly'?'Monthly postpaid':tier==='weekly'?'Weekly postpaid':tier==='daily'?'Daily payment':tier==='prepaid'?'Prepaid wallet only':'Blocked customers'}</div>
+        {[
+          {n:'Priya Sharma',h:'H-204',cs:92,lim:3000,used:1284,init:'PS',c:'var(--primary)'},
+          {n:'Sneha Patil',h:'F-12',cs:88,lim:5000,used:2480,init:'SP',c:'var(--primary)'},
+          {n:'Maya Iyer',h:'H-301',cs:85,lim:2500,used:1240,init:'MI',c:'var(--primary)'},
+          {n:'Anita Joshi',h:'A-22',cs:64,lim:2000,used:1980,init:'AJ',c:'var(--accent)'},
+          {n:'Suresh Pawar',h:'H-115',cs:42,lim:1000,used:1100,init:'SP',c:'var(--rose)'},
+        ].map((c,i)=>(
+          <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+            <div style={{display:'flex', alignItems:'center', gap:11}}>
+              <div className="avatar" style={{background:`color-mix(in srgb, ${c.c} 14%, transparent)`, color:c.c}}>{c.init}</div>
+              <div style={{flex:1, minWidth:0}}>
+                <div style={{fontSize:12, fontWeight:600}}>{c.n}</div>
+                <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{c.h} · Credit score {c.cs}/100</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div className="mono" style={{fontSize:11, fontWeight:700, color:c.used>c.lim?'var(--rose)':'var(--ink)'}}>₹{c.used}/{c.lim}</div>
+                <div style={{fontSize:9, color:'var(--muted)', marginTop:1}}>credit used</div>
+              </div>
+            </div>
+            <div style={{height:4, background:'var(--bg-warm)', borderRadius:999, marginTop:9, overflow:'hidden'}}>
+              <div style={{width:`${Math.min(100,c.used/c.lim*100)}%`, height:'100%', background:c.used>c.lim?'var(--rose)':c.used/c.lim>0.8?'var(--accent)':'var(--primary)'}}></div>
+            </div>
+            {c.used>c.lim && <div style={{marginTop:8, padding:'6px 9px', background:'var(--rose-soft)', color:'var(--rose)', borderRadius:8, fontSize:10, fontWeight:600, display:'flex', alignItems:'center', gap:6}}><I.AlertTri style={{width:11, height:11}}/> Over credit limit · move to daily</div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// OWNER: Announcement composer + history
+const OwnerAnnounce = ({onBack, onCompose}) => (
+  <div>
+    <PageHeader title="Announcements" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}} onClick={onCompose}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div onClick={onCompose} className="card" style={{padding:14, marginBottom:14, background:'linear-gradient(135deg, var(--ink), #2c241c)', borderColor:'transparent', color:'#fff', cursor:'pointer', position:'relative', overflow:'hidden'}}>
+        <div style={{position:'absolute', top:-30, right:-30, width:120, height:120, background:'rgba(255,255,255,0.06)', borderRadius:'50%'}}></div>
+        <div style={{position:'relative'}}>
+          <I.Megaphone style={{width:24, height:24, marginBottom:8}}/>
+          <div className="display" style={{fontSize:19, fontWeight:500, lineHeight:1.15}}>Compose new<br/>announcement</div>
+          <div style={{fontSize:11, opacity:0.8, marginTop:6}}>Reach customers and agents instantly</div>
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Quick templates</div>
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7, marginBottom:14}}>
+        {[
+          {i:<I.Gift/>,l:'New offer',c:'var(--accent)'},
+          {i:<I.Calendar/>,l:'Shop closed',c:'var(--rose)'},
+          {i:<I.Tag/>,l:'Price change',c:'var(--blue)'},
+          {i:<I.Drop/>,l:'New product',c:'var(--primary)'},
+          {i:<I.AlertTri/>,l:'Milk shortage',c:'var(--accent)'},
+          {i:<I.Star/>,l:'Festival wishes',c:'var(--purple)'},
+        ].map((t,i)=>(
+          <button key={i} onClick={onCompose} className="card" style={{padding:10, border:'1px solid var(--line)', display:'flex', alignItems:'center', gap:8, cursor:'pointer'}}>
+            <div style={{width:28, height:28, borderRadius:8, background:`color-mix(in srgb, ${t.c} 14%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center'}}>{React.cloneElement(t.i,{style:{width:13, height:13, color:t.c}})}</div>
+            <span style={{fontSize:11, fontWeight:600}}>{t.l}</span>
+          </button>
+        ))}
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Sent recently</div>
+      {[
+        {t:'20% off all Ghee this week',a:'All customers · 284 sent',d:'2h ago',ch:['Whats','Bell'],r:'168 viewed'},
+        {t:'Shop closed on 23 May (Buddha Purnima)',a:'All customers + agents · 287 sent',d:'Yesterday',ch:['Whats','Phone','Bell'],r:'241 viewed'},
+        {t:'Cow milk price ₹62 → ₹65 from 1 June',a:'All customers · 284 sent',d:'3 days ago',ch:['Whats','Bell'],r:'212 viewed'},
+        {t:'Paneer back in stock!',a:'Route A only · 78 sent',d:'5 days ago',ch:['Bell'],r:'42 viewed'},
+      ].map((a,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:6}}>
+          <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+            <div style={{width:30, height:30, borderRadius:9, background:'var(--accent-soft)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}><I.Megaphone style={{width:14, height:14, color:'var(--accent)'}}/></div>
+            <div style={{flex:1, minWidth:0}}>
+              <div style={{fontSize:12, fontWeight:600}}>{a.t}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:2}}>{a.a}</div>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:8, paddingTop:7, borderTop:'1px dashed var(--line)'}}>
+                <div style={{fontSize:10, color:'var(--muted)'}}>{a.d} · {a.r}</div>
+                <div style={{display:'flex', gap:3}}>
+                  {a.ch.includes('Whats') && <I.Whats style={{width:12, height:12, color:'#25D366'}}/>}
+                  {a.ch.includes('Phone') && <I.Phone style={{width:12, height:12, color:'var(--blue)'}}/>}
+                  {a.ch.includes('Bell') && <I.Bell style={{width:12, height:12, color:'var(--accent)'}}/>}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// OWNER: Announcement compose form
+const OwnerAnnounceCompose = ({onBack}) => {
+  const [audience, setAudience] = useState('all');
+  const [channels, setChannels] = useState(['whatsapp','bell']);
+  const [type, setType] = useState('offer');
+  return (
+    <div>
+      <PageHeader title="New announcement" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Type</div>
+          <div className="chips">
+            {[{id:'offer',l:'🎉 Offer'},{id:'closure',l:'🛑 Closure'},{id:'price',l:'💰 Price change'},{id:'product',l:'🆕 New product'},{id:'shortage',l:'⚠️ Shortage'},{id:'festival',l:'✨ Festival'}].map(t=>(
+              <span key={t.id} onClick={()=>setType(t.id)} className={`chip ${type===t.id?'on':''}`}>{t.l}</span>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Title</div>
+          <input defaultValue="20% off all Ghee this week" style={{width:'100%', border:'1px solid var(--line)', background:'var(--bg)', borderRadius:11, padding:'11px 13px', fontSize:13, fontWeight:600, fontFamily:'DM Sans', outline:'none'}}/>
+          <div className="stat-lbl" style={{marginBottom:8, marginTop:12}}>Message</div>
+          <textarea defaultValue="Pure cow ghee at ₹336 (was ₹420). Order before Sunday. Use code GHEE20 at checkout. Limited stock!" rows={4} style={{width:'100%', border:'1px solid var(--line)', background:'var(--bg)', borderRadius:11, padding:'11px 13px', fontSize:12, fontFamily:'DM Sans', outline:'none', resize:'none', lineHeight:1.5}}/>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Send to</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[
+              {id:'all',l:'All customers',s:'284 people',i:<I.Users/>},
+              {id:'route',l:'Specific route',s:'Pick A/B/C/D',i:<I.Map/>},
+              {id:'tier',l:'By payment tier',s:'e.g. monthly only',i:<I.Crown/>},
+              {id:'one',l:'One customer',s:'Pick from list',i:<I.Users/>},
+              {id:'agents',l:'All agents',s:'4 people',i:<I.Truck/>},
+              {id:'everyone',l:'Customers + agents',s:'288 people',i:<I.Globe/>},
+            ].map(o=>(
+              <button key={o.id} onClick={()=>setAudience(o.id)} style={{padding:10, background:audience===o.id?'var(--ink)':'var(--card)', color:audience===o.id?'var(--bg)':'var(--ink)', border:`1px solid ${audience===o.id?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', textAlign:'left'}}>
+                <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>{React.cloneElement(o.i,{style:{width:13, height:13}})}<span style={{fontWeight:600, fontSize:11}}>{o.l}</span></div>
+                <div style={{fontSize:9, opacity:0.7}}>{o.s}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Send via</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[{id:'whatsapp',l:'WhatsApp',i:<I.Whats/>,c:'#25D366'},{id:'sms',l:'SMS',i:<I.Phone/>,c:'var(--blue)'},{id:'bell',l:'In-app push',i:<I.Bell/>,c:'var(--accent)'},{id:'email',l:'Email',i:<I.Mail/>,c:'var(--ink)'}].map(o=>{
+              const on = channels.includes(o.id);
+              return <button key={o.id} onClick={()=>setChannels(s=>s.includes(o.id)?s.filter(x=>x!==o.id):[...s,o.id])} style={{padding:10, background:on?'var(--ink)':'var(--card)', color:on?'var(--bg)':'var(--ink)', border:`1px solid ${on?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', display:'flex', alignItems:'center', gap:6}}>{React.cloneElement(o.i,{style:{width:13, height:13, color:on?'#fff':o.c}})}<span style={{fontWeight:600, fontSize:11}}>{o.l}</span></button>;
+            })}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>When to send</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[{l:'Send now',s:'Immediately',on:true},{l:'Schedule',s:'Pick date/time',on:false}].map((t,i)=>(
+              <button key={i} style={{padding:11, background:t.on?'var(--primary)':'var(--card)', color:t.on?'#fff':'var(--ink)', border:`1px solid ${t.on?'var(--primary)':'var(--line)'}`, borderRadius:11, cursor:'pointer'}}>
+                <div style={{fontSize:12, fontWeight:600}}>{t.l}</div>
+                <div style={{fontSize:9, opacity:0.7, marginTop:1}}>{t.s}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:14, background:'var(--bg-warm)'}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+            <div>
+              <div style={{fontSize:11, color:'var(--muted)', fontWeight:600}}>Will reach</div>
+              <div className="display" style={{fontSize:22, fontWeight:500, marginTop:2}}>284 people</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:2}}>via {channels.length} channel{channels.length>1?'s':''}</div>
+            </div>
+            <I.Megaphone style={{width:32, height:32, color:'var(--ink-soft)'}}/>
+          </div>
+        </div>
+        <button className="btn btn-dark btn-block" style={{padding:'14px'}} onClick={onBack}>Send announcement →</button>
+      </div>
+    </div>
+  );
+};
+
+// OWNER: Complaints / issues
+const OwnerComplaints = ({onBack}) => (
+  <div>
+    <PageHeader title="Complaints & issues" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Filter style={{width:14, height:14}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="row-3" style={{marginBottom:12}}>
+        <div className="stat-cell"><div className="stat-lbl">Open</div><div className="stat-val" style={{color:'var(--rose)'}}>4</div></div>
+        <div className="stat-cell"><div className="stat-lbl">This week</div><div className="stat-val">7</div></div>
+        <div className="stat-cell"><div className="stat-lbl">Resolved</div><div className="stat-val" style={{color:'var(--primary)'}}>23</div></div>
+      </div>
+      <div className="chips" style={{marginBottom:12}}>{['Open 4','In review 2','Resolved 23','Closed 18'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      {[
+        {c:'Priya Sharma',i:'Milk smelled sour',d:'20 May · 8:14 AM',t:'Quality',a:120,s:'Open',sc:'var(--rose)'},
+        {c:'Aakash Verma',i:'Wrong delivery — gave curd instead of paneer',d:'20 May · 7:30 AM',t:'Wrong item',a:40,s:'Open',sc:'var(--rose)'},
+        {c:'Sneha Patil',i:'Milk packet leaked',d:'19 May · 9:02 AM',t:'Damage',a:62,s:'In review',sc:'var(--accent)'},
+        {c:'Vikram Reddy',i:'Late delivery (9 AM)',d:'19 May · 9:14 AM',t:'Service',a:0,s:'In review',sc:'var(--accent)'},
+        {c:'Maya Iyer',i:'Quantity less — 800ml instead 1L',d:'18 May',t:'Quantity',a:62,s:'Resolved',sc:'var(--primary)'},
+      ].map((c,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:700, fontSize:13}}>{c.c}</div>
+              <div style={{fontSize:11, color:'var(--ink-soft)', marginTop:3}}>{c.i}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:3}}>{c.d} · {c.t}</div>
+            </div>
+            <span className="pill" style={{background:`color-mix(in srgb, ${c.sc} 14%, transparent)`, color:c.sc}}>{c.s}</span>
+          </div>
+          {c.s!=='Resolved' && (
+            <div style={{display:'flex', gap:5, marginTop:11, paddingTop:9, borderTop:'1px dashed var(--line)'}}>
+              <button className="btn btn-primary" style={{flex:1, fontSize:10, padding:'7px 9px'}}>Refund ₹{c.a}</button>
+              <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 9px'}}>Replace</button>
+              <button className="btn btn-ghost" style={{flex:1, fontSize:10, padding:'7px 9px'}}>Call</button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// OWNER: Holiday / festival blackout
+const OwnerBlackout = ({onBack}) => {
+  const [marked, setMarked] = useState([23,2,11]);
+  return (
+    <div>
+      <PageHeader title="Holidays & closures" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div style={{padding:12, background:'var(--accent-soft)', borderRadius:12, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5, marginBottom:14, display:'flex', gap:9}}>
+          <I.Calendar style={{width:14, height:14, flexShrink:0, marginTop:1, color:'var(--accent)'}}/>
+          <span>Mark days your shop is closed. All deliveries auto-skip and customers get notified 24h in advance.</span>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:14}}>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10}}>
+            <button className="icon-btn" style={{width:28, height:28}}><I.Back style={{width:13, height:13}}/></button>
+            <div className="display" style={{fontSize:15, fontWeight:500}}>May 2026</div>
+            <button className="icon-btn" style={{width:28, height:28}}><I.ChevR style={{width:13, height:13}}/></button>
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:3, fontSize:9, color:'var(--muted)', fontWeight:600, textAlign:'center', marginBottom:6}}>
+            {['S','M','T','W','T','F','S'].map((d,i)=><div key={i}>{d}</div>)}
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:3}}>
+            {Array.from({length:35}, (_,i)=>{
+              const day = i - 3;
+              if (day<1 || day>31) return <div key={i}></div>;
+              const past = day<=20;
+              const sel = marked.includes(day);
+              return <button key={i} onClick={()=>!past && setMarked(m=>m.includes(day)?m.filter(d=>d!==day):[...m,day])} style={{aspectRatio:'1', background:sel?'var(--rose)':'transparent', color:sel?'#fff':past?'var(--line)':'var(--ink)', border:'none', borderRadius:8, fontSize:11, fontWeight:600, cursor:past?'default':'pointer'}}>{day}</button>;
+            })}
+          </div>
+        </div>
+        <div className="section-title" style={{marginBottom:8}}>Upcoming closures</div>
+        {[
+          {d:'23 May',e:'Buddha Purnima',a:'Auto-notify 22 May night'},
+          {d:'2 Jun',e:'Shop maintenance day',a:'Custom — added by you'},
+          {d:'11 Jun',e:'Family wedding',a:'Custom — added by you'},
+        ].map((b,i)=>(
+          <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:11}}>
+            <div style={{width:36, height:36, borderRadius:11, background:'var(--rose-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Calendar style={{width:15, height:15, color:'var(--rose)'}}/></div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:12, fontWeight:600}}>{b.d} · {b.e}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{b.a}</div>
+            </div>
+            <button className="icon-btn" style={{width:28, height:28}}><I.X style={{width:12, height:12}}/></button>
+          </div>
+        ))}
+        <div className="section-title" style={{marginTop:14, marginBottom:8}}>Auto-loaded festivals</div>
+        <div style={{padding:11, background:'var(--bg-warm)', borderRadius:11, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5}}>Diwali · Holi · Rakhi · Janmashtami · Republic Day · Independence Day · Eid · Christmas — loaded but optional. Toggle in Settings.</div>
+      </div>
+    </div>
+  );
+};
+
+// OWNER: Agent leave management
+const OwnerAgentLeave = ({onBack}) => (
+  <div>
+    <PageHeader title="Agent leave & swap" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="card" style={{padding:14, marginBottom:14, background:'var(--accent-soft)', borderColor:'color-mix(in srgb, var(--accent) 25%, transparent)'}}>
+        <div style={{display:'flex', alignItems:'center', gap:11, marginBottom:10}}>
+          <div style={{width:42, height:42, borderRadius:13, background:'var(--accent)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'Fraunces', fontWeight:600, fontSize:15}}>SM</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:11, color:'var(--muted)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.06em'}}>Pending request</div>
+            <div style={{fontSize:13, fontWeight:700, marginTop:1}}>Suresh M · Route B</div>
+            <div style={{fontSize:11, color:'var(--ink-soft)', marginTop:3}}>"Sister's wedding — need 22 & 23 May off"</div>
+          </div>
+        </div>
+        <div style={{display:'flex', gap:6, paddingTop:9, borderTop:'1px dashed color-mix(in srgb, var(--accent) 40%, transparent)'}}>
+          <button className="btn btn-primary" style={{flex:1, fontSize:11, padding:'9px'}}>Approve & reassign</button>
+          <button className="btn btn-ghost" style={{flex:1, fontSize:11, padding:'9px'}}>Decline</button>
+        </div>
+      </div>
+      <div className="section-title" style={{marginBottom:8}}>Pick a substitute</div>
+      <div style={{fontSize:11, color:'var(--muted)', marginBottom:8}}>For Route B · 22-23 May (64 customers)</div>
+      {[
+        {n:'Ravi K.',r:'Route A',a:'Available 9 AM onwards',rating:4.8,kmaway:1.2,best:true},
+        {n:'Anil P.',r:'Route C',a:'Available after 8 AM',rating:4.7,kmaway:2.8},
+        {n:'Manoj T.',r:'Backup pool',a:'Free both days',rating:4.5,kmaway:3.4},
+      ].map((s,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7, borderColor:s.best?'var(--primary)':'var(--line)', borderWidth:s.best?2:1}}>
+          <div style={{display:'flex', alignItems:'center', gap:11}}>
+            <div className="avatar" style={{background:'var(--blue-soft)', color:'var(--blue)'}}>{s.n.split(' ').map(w=>w[0]).join('')}</div>
+            <div style={{flex:1}}>
+              <div style={{display:'flex', alignItems:'center', gap:6}}>
+                <span style={{fontWeight:600, fontSize:13}}>{s.n}</span>
+                {s.best && <span className="pill" style={{background:'var(--primary)', color:'#fff'}}>Best match</span>}
+              </div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{s.r} · ⭐ {s.rating} · {s.kmaway} km away</div>
+            </div>
+          </div>
+          <div style={{fontSize:11, color:'var(--ink-soft)', marginTop:8, padding:'7px 10px', background:'var(--bg-warm)', borderRadius:9}}>✓ {s.a}</div>
+          <button className="btn btn-dark btn-block" style={{marginTop:9, fontSize:11, padding:'9px'}}>Assign {s.n} to Route B →</button>
+        </div>
+      ))}
+      <div className="section-title" style={{marginTop:14, marginBottom:8}}>Leave history</div>
+      {[{n:'Ravi K.',d:'14 Apr',r:'1 day · sick',s:'Approved'},{n:'Anil P.',d:'2 Apr',r:'2 days · personal',s:'Approved'},{n:'Suresh M.',d:'12 Mar',r:'1 day · family',s:'Approved'}].map((l,i)=>(
+        <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'10px 0', borderBottom:i<2?'1px solid var(--line)':'none'}}>
+          <div><div style={{fontSize:12, fontWeight:500}}>{l.n}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{l.d} · {l.r}</div></div>
+          <span className="pill" style={{background:'var(--primary-soft)', color:'var(--primary)'}}>{l.s}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// CUSTOMER: Notifications & offers
+const CustomerNotifications = ({onBack}) => (
+  <div>
+    <PageHeader title="Notifications & offers" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="chips" style={{marginBottom:12}}>{['All 12','Offers 4','Order updates 5','Announcements 3'].map((c,i)=><span key={i} className={`chip ${i===0?'on':''}`}>{c}</span>)}</div>
+      <div className="section-title" style={{marginBottom:8}}>From Sai Dairy</div>
+      {[
+        {ic:<I.Gift/>,c:'var(--accent)',t:'🎉 20% off all Ghee this week',d:'Pure cow ghee at ₹336 (was ₹420). Use code GHEE20. Limited stock!',time:'2h ago',unread:true},
+        {ic:<I.Calendar/>,c:'var(--rose)',t:'Shop closed on 23 May',d:'Buddha Purnima holiday. No deliveries that day. Your standing order will resume on 24 May.',time:'Yesterday',unread:true},
+        {ic:<I.Tag/>,c:'var(--blue)',t:'Cow milk price update from 1 June',d:'New price ₹65/litre (current ₹62). Your monthly bill will adjust automatically.',time:'3d ago',unread:true},
+        {ic:<I.Drop/>,c:'var(--primary)',t:'Paneer back in stock!',d:'Fresh batch arrived. Order today for tomorrow morning delivery.',time:'5d ago',unread:false},
+        {ic:<I.Star/>,c:'var(--purple)',t:'Happy Akshaya Tritiya 🪔',d:'Wishing you & family prosperity. Special sweets pack available — book now.',time:'1w ago',unread:false},
+      ].map((n,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7, background:n.unread?'var(--card)':'var(--bg-warm)', borderColor:n.unread?'var(--line)':'transparent'}}>
+          <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+            <div style={{width:34, height:34, borderRadius:10, background:`color-mix(in srgb, ${n.c} 14%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{React.cloneElement(n.ic,{style:{width:15, height:15, color:n.c}})}</div>
+            <div style={{flex:1, minWidth:0}}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:6}}>
+                <div style={{fontWeight:n.unread?700:500, fontSize:12}}>{n.t}</div>
+                {n.unread && <span style={{width:7, height:7, background:'var(--accent)', borderRadius:'50%', flexShrink:0, marginTop:5}}></span>}
+              </div>
+              <div style={{fontSize:11, color:'var(--ink-soft)', marginTop:4, lineHeight:1.4}}>{n.d}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:6}}>{n.time}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className="section-title" style={{marginTop:14, marginBottom:8}}>Order updates</div>
+      {[
+        {t:'Order delivered ✓',d:'Cow milk 1L + Curd · 20 May at 7:18 AM',time:'today'},
+        {t:'Tomorrow delivery scheduled',d:'Cow milk 1L · ETA 7:15 AM',time:'today'},
+      ].map((n,i)=>(
+        <div key={i} className="card" style={{padding:11, marginBottom:6, display:'flex', alignItems:'center', gap:10}}>
+          <div style={{width:30, height:30, borderRadius:9, background:'var(--primary-soft)', display:'flex', alignItems:'center', justifyContent:'center'}}><I.Check style={{width:13, height:13, color:'var(--primary)'}}/></div>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{n.t}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{n.d}</div></div>
+          <div style={{fontSize:10, color:'var(--muted)'}}>{n.time}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// CUSTOMER: Report issue
+const CustomerReportIssue = ({onBack}) => {
+  const [issueType, setIssueType] = useState('quality');
+  return (
+    <div>
+      <PageHeader title="Report a problem" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div style={{padding:12, background:'var(--bg-warm)', borderRadius:12, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5, marginBottom:14, display:'flex', gap:9}}>
+          <I.Help style={{width:14, height:14, flexShrink:0, marginTop:1}}/>
+          <span>Sorry for the trouble. Tell us what went wrong — Rajesh from Sai Dairy will respond within 2 hours.</span>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>What's the issue?</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[
+              {id:'quality',l:'Quality',s:'Sour, off taste',i:<I.AlertTri/>,c:'var(--rose)'},
+              {id:'wrong',l:'Wrong item',s:'Got A, ordered B',i:<I.Refresh/>,c:'var(--accent)'},
+              {id:'quantity',l:'Quantity less',s:'Short measure',i:<I.Box/>,c:'var(--blue)'},
+              {id:'damage',l:'Damaged',s:'Leaked, torn',i:<I.AlertTri/>,c:'var(--rose)'},
+              {id:'late',l:'Too late',s:'After 9 AM',i:<I.Clock/>,c:'var(--accent)'},
+              {id:'missed',l:'Not delivered',s:'No item came',i:<I.X/>,c:'var(--rose)'},
+              {id:'agent',l:'Agent behavior',s:'Rude / careless',i:<I.Users/>,c:'var(--purple)'},
+              {id:'other',l:'Other',s:'Something else',i:<I.Help/>,c:'var(--ink-soft)'},
+            ].map(o=>(
+              <button key={o.id} onClick={()=>setIssueType(o.id)} style={{padding:11, background:issueType===o.id?'var(--ink)':'var(--card)', color:issueType===o.id?'var(--bg)':'var(--ink)', border:`1px solid ${issueType===o.id?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', textAlign:'left'}}>
+                <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>{React.cloneElement(o.i,{style:{width:13, height:13, color:issueType===o.id?'#fff':o.c}})}<span style={{fontWeight:600, fontSize:11}}>{o.l}</span></div>
+                <div style={{fontSize:9, opacity:0.7}}>{o.s}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Which order?</div>
+          {[{d:'20 May · 7:18 AM',i:'Cow milk 1L + Curd 200g',a:102,sel:true},{d:'19 May · 7:22 AM',i:'Cow milk 1L',a:62,sel:false},{d:'18 May · 7:20 AM',i:'Cow milk 1L + Paneer',a:182,sel:false}].map((o,i)=>(
+            <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:i<2?'1px solid var(--line)':'none'}}>
+              <div style={{width:18, height:18, borderRadius:'50%', border:`2px solid ${o.sel?'var(--ink)':'var(--line)'}`, background:o.sel?'var(--ink)':'transparent', display:'flex', alignItems:'center', justifyContent:'center'}}>{o.sel && <div style={{width:7, height:7, background:'#fff', borderRadius:'50%'}}></div>}</div>
+              <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{o.d}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{o.i}</div></div>
+              <div className="mono" style={{fontSize:11, fontWeight:600}}>₹{o.a}</div>
+            </div>
+          ))}
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Tell us more</div>
+          <textarea defaultValue="Milk smelled sour when I opened the packet. Couldn't use it for tea this morning." rows={3} style={{width:'100%', border:'1px solid var(--line)', background:'var(--bg)', borderRadius:11, padding:'11px 13px', fontSize:12, fontFamily:'DM Sans', outline:'none', resize:'none', lineHeight:1.5}}/>
+          <button className="btn btn-ghost btn-block" style={{marginTop:9, padding:'9px', fontSize:11}}><I.Camera style={{width:13, height:13}}/> Add photo proof (optional)</button>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>What would you like?</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:6}}>
+            {[{l:'Full refund',on:true},{l:'Replace today',on:false},{l:'Credit next bill',on:false}].map((r,i)=>(
+              <button key={i} style={{padding:'10px 5px', background:r.on?'var(--primary)':'var(--card)', color:r.on?'#fff':'var(--ink)', border:`1px solid ${r.on?'var(--primary)':'var(--line)'}`, borderRadius:10, cursor:'pointer', fontSize:10, fontWeight:600}}>{r.l}</button>
+            ))}
+          </div>
+        </div>
+        <button className="btn btn-dark btn-block" style={{padding:'14px'}}>Submit complaint →</button>
+        <div style={{textAlign:'center', fontSize:10, color:'var(--muted)', marginTop:8}}>Response within 2 hours · ticket # auto-generated</div>
+      </div>
+    </div>
+  );
+};
+
+// CUSTOMER: Family members
+const CustomerFamily = ({onBack}) => (
+  <div>
+    <PageHeader title="Family members" onBack={onBack} right={<button className="icon-btn" style={{width:32, height:32}}><I.Plus style={{width:16, height:16}}/></button>}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div style={{padding:12, background:'var(--bg-warm)', borderRadius:12, fontSize:11, color:'var(--ink-soft)', lineHeight:1.5, marginBottom:14, display:'flex', gap:9}}>
+        <I.Users style={{width:14, height:14, flexShrink:0, marginTop:1}}/>
+        <span>Link family members to share one bill, one wallet, and let anyone place orders.</span>
+      </div>
+      {[
+        {n:'Priya Sharma',r:'You',p:'+91 98765 43210',pri:true,init:'PS'},
+        {n:'Rohit Sharma',r:'Husband',p:'+91 98765 11122',pri:false,init:'RS'},
+        {n:'Anika Sharma',r:'Daughter (15)',p:'+91 98765 11123',pri:false,init:'AS'},
+        {n:'Saroj Sharma',r:'Mother-in-law',p:'+91 98765 11124',pri:false,init:'SS'},
+      ].map((m,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7, display:'flex', alignItems:'center', gap:11}}>
+          <div className="avatar" style={{background:m.pri?'var(--accent)':'var(--bg-warm)', color:m.pri?'#fff':'var(--ink-soft)'}}>{m.init}</div>
+          <div style={{flex:1}}>
+            <div style={{display:'flex', alignItems:'center', gap:6}}>
+              <span style={{fontWeight:600, fontSize:13}}>{m.n}</span>
+              {m.pri && <span className="pill" style={{background:'var(--accent-soft)', color:'var(--accent)'}}>Primary</span>}
+            </div>
+            <div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{m.r} · {m.p}</div>
+          </div>
+          {!m.pri && <button className="icon-btn" style={{width:28, height:28}}><I.X style={{width:12, height:12}}/></button>}
+        </div>
+      ))}
+      <div className="section-title" style={{marginTop:14, marginBottom:8}}>Shared settings</div>
+      {[
+        {l:'Shared wallet',s:'All members use ₹420 balance',v:true},
+        {l:'Shared bill',s:'One monthly invoice for family',v:true},
+        {l:'Anyone can order',s:'Or only Primary',v:true},
+        {l:'Notify all on delivery',s:'Whoever is home',v:false},
+      ].map((o,i)=>(
+        <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'11px 0', borderBottom:i<3?'1px solid var(--line)':'none'}}>
+          <div style={{flex:1}}><div style={{fontSize:12, fontWeight:500}}>{o.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{o.s}</div></div>
+          <div style={{width:34, height:20, borderRadius:999, background:o.v?'var(--primary)':'var(--line)', position:'relative'}}><div style={{position:'absolute', top:2, left:o.v?16:2, width:16, height:16, background:'#fff', borderRadius:'50%'}}></div></div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// DELIVERY: Announcements view
+const DeliveryAnnouncements = ({onBack}) => (
+  <div>
+    <PageHeader title="Announcements" onBack={onBack}/>
+    <div style={{padding:'4px 16px 24px'}}>
+      <div className="section-title" style={{marginBottom:8}}>From owner</div>
+      {[
+        {ic:<I.AlertTri/>,c:'var(--rose)',t:'⚠️ Paneer stock low — only 8 left',d:'If any customer asks for extra paneer today, tell them sorry, order tomorrow. Priority customers: Sneha P, Vikram R.',time:'1h ago',unread:true},
+        {ic:<I.Calendar/>,c:'var(--accent)',t:'Shop closed 23 May (Buddha Purnima)',d:'No deliveries on 23 May. Customers already notified. Plan accordingly.',time:'Yesterday',unread:true},
+        {ic:<I.Gift/>,c:'var(--primary)',t:'New product: Cow ghee 1L jar',d:'Available from 25 May, price ₹780. Mention to standing customers if asked.',time:'2d ago',unread:false},
+        {ic:<I.Megaphone/>,c:'var(--blue)',t:'Cash deposit deadline change',d:'Now deposit cash at shop by 11 AM (was 12 PM) from 1 June.',time:'4d ago',unread:false},
+      ].map((n,i)=>(
+        <div key={i} className="card" style={{padding:12, marginBottom:7, background:n.unread?'var(--card)':'var(--bg-warm)'}}>
+          <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+            <div style={{width:34, height:34, borderRadius:10, background:`color-mix(in srgb, ${n.c} 14%, transparent)`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{React.cloneElement(n.ic,{style:{width:15, height:15, color:n.c}})}</div>
+            <div style={{flex:1, minWidth:0}}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:6}}>
+                <div style={{fontWeight:n.unread?700:500, fontSize:12}}>{n.t}</div>
+                {n.unread && <span style={{width:7, height:7, background:'var(--accent)', borderRadius:'50%', flexShrink:0, marginTop:5}}></span>}
+              </div>
+              <div style={{fontSize:11, color:'var(--ink-soft)', marginTop:4, lineHeight:1.4}}>{n.d}</div>
+              <div style={{fontSize:10, color:'var(--muted)', marginTop:6}}>{n.time}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// DELIVERY: Report issue (on-route)
+const DeliveryReportIssue = ({onBack}) => {
+  const [issue, setIssue] = useState('not-home');
+  return (
+    <div>
+      <PageHeader title="Report issue" onBack={onBack}/>
+      <div style={{padding:'4px 16px 24px'}}>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>Current stop</div>
+          <div style={{display:'flex', alignItems:'center', gap:11}}>
+            <div className="avatar" style={{background:'var(--blue)', color:'#fff'}}>PS</div>
+            <div style={{flex:1}}><div style={{fontWeight:600, fontSize:13}}>Priya Sharma · H-204</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>Cow 1L + Curd · ₹102</div></div>
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>What happened?</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:7}}>
+            {[
+              {id:'not-home',l:'Customer not home',i:<I.X/>,c:'var(--accent)'},
+              {id:'refused',l:'Refused delivery',i:<I.X/>,c:'var(--rose)'},
+              {id:'wrong-addr',l:'Wrong address',i:<I.Pin/>,c:'var(--accent)'},
+              {id:'stock-out',l:'Item out of stock',i:<I.Box/>,c:'var(--rose)'},
+              {id:'damage',l:'Item damaged',i:<I.AlertTri/>,c:'var(--rose)'},
+              {id:'safety',l:'Safety / dog',i:<I.Shield/>,c:'var(--rose)'},
+              {id:'vehicle',l:'Vehicle issue',i:<I.Truck/>,c:'var(--accent)'},
+              {id:'other',l:'Other',i:<I.Help/>,c:'var(--ink-soft)'},
+            ].map(o=>(
+              <button key={o.id} onClick={()=>setIssue(o.id)} style={{padding:11, background:issue===o.id?'var(--ink)':'var(--card)', color:issue===o.id?'var(--bg)':'var(--ink)', border:`1px solid ${issue===o.id?'var(--ink)':'var(--line)'}`, borderRadius:11, cursor:'pointer', textAlign:'left', display:'flex', alignItems:'center', gap:6}}>
+                {React.cloneElement(o.i,{style:{width:13, height:13, color:issue===o.id?'#fff':o.c}})}
+                <span style={{fontWeight:600, fontSize:11}}>{o.l}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{padding:14, marginBottom:12}}>
+          <div className="stat-lbl" style={{marginBottom:8}}>What now?</div>
+          {[{l:'Try again later today',s:'Come back after route',on:true},{l:'Reschedule tomorrow',s:'Auto-add to tomorrow',on:false},{l:'Cancel — refund',s:'Customer not at fault',on:false}].map((o,i)=>(
+            <div key={i} style={{display:'flex', alignItems:'center', gap:10, padding:'10px 0', borderBottom:i<2?'1px solid var(--line)':'none'}}>
+              <div style={{width:18, height:18, borderRadius:'50%', border:`2px solid ${o.on?'var(--ink)':'var(--line)'}`, background:o.on?'var(--ink)':'transparent', display:'flex', alignItems:'center', justifyContent:'center'}}>{o.on && <div style={{width:7, height:7, background:'#fff', borderRadius:'50%'}}></div>}</div>
+              <div style={{flex:1}}><div style={{fontSize:12, fontWeight:600}}>{o.l}</div><div style={{fontSize:10, color:'var(--muted)', marginTop:1}}>{o.s}</div></div>
+            </div>
+          ))}
+        </div>
+        <button className="btn btn-ghost btn-block" style={{padding:'11px', marginBottom:10, fontSize:12}}><I.Camera style={{width:13, height:13}}/> Add photo proof</button>
+        <button className="btn btn-ghost btn-block" style={{padding:'11px', marginBottom:14, fontSize:12}}><I.Phone style={{width:13, height:13}}/> Call customer first</button>
+        <button className="btn btn-dark btn-block" style={{padding:'14px'}} onClick={onBack}>Submit & continue route →</button>
+      </div>
+    </div>
+  );
+};
+
+
 const App = () => {
   const [loggedIn, setLoggedIn] = useState({super:false, owner:false, customer:false, delivery:false});
   const allLoggedIn = Object.values(loggedIn).every(v=>v);
- 
+
   return (
     <div className="container">
       <div className="intro">
-        <div className="demo-label">Enterprise demo · production preview</div>
+        <div className="demo-label">Enterprise demo · production preview · v2</div>
         <h1>One app, <em>four worlds.</em></h1>
-        <p>Doodhwala is a multi-tenant dairy & daily-essentials platform. Same phone, same number — your role is detected automatically. Tap the hamburger menu in any phone to explore every feature. Invoices generate by date range. Customers order ten different ways. Nothing is mocked behind the scenes.</p>
+        <p>Doodhwala is a multi-tenant dairy & daily-essentials platform. Same phone, same number — your role auto-detects. Now with announcement broadcasts, customer payment-tier management, complaint flow, holiday calendar, agent leave & swap, family-linked accounts, and proper edge-case handling. Tap any hamburger ☰ to explore.</p>
         {!allLoggedIn && (
           <button className="btn btn-dark" onClick={()=>setLoggedIn({super:true, owner:true, customer:true, delivery:true})} style={{marginTop:18, padding:'12px 22px'}}>
             Skip login · open all four →
           </button>
         )}
       </div>
- 
+
       <div className="phones-stage">
         {[
           {role:'super', label:'Platform Admin', sub:'admin@doodhwala.in', tint:'#1A1410', Comp:SuperAdmin},
@@ -1762,32 +2386,48 @@ const App = () => {
           </div>
         ))}
       </div>
- 
-      <div style={{maxWidth:900, margin:'0 auto', padding:'20px 24px', background:'var(--card)', border:'1px solid var(--line)', borderRadius:18}}>
-        <div className="display" style={{fontSize:22, fontWeight:500, marginBottom:12}}>How to explore this demo</div>
-        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:14, fontSize:13, lineHeight:1.6, color:'var(--ink-soft)'}}>
+
+      <div style={{maxWidth:960, margin:'0 auto', padding:'22px 26px', background:'var(--card)', border:'1px solid var(--line)', borderRadius:18}}>
+        <div className="display" style={{fontSize:22, fontWeight:500, marginBottom:14}}>What's new in v2</div>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(230px, 1fr))', gap:16, fontSize:13, lineHeight:1.6, color:'var(--ink-soft)'}}>
           <div>
-            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>1. Tap any hamburger ☰</div>
-            Every phone has a full drawer menu with all features grouped logically — Today, Customers, Catalog, Money, Reports, Settings.
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>💳 Payment tiers (Owner)</div>
+            Per-customer access: Monthly postpaid (trusted), Weekly, Daily, Prepaid only, or Blocked. With credit limit, credit-used progress, and auto credit-score per customer. <em>Owner → Customers → Payment terms & credit</em>
           </div>
           <div>
-            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>2. Try Owner → Invoices</div>
-            See the "Generate by date range" flow — scope, date pickers, GST options, send via WhatsApp / SMS / Email / Print, then preview the actual tax invoice.
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>📣 Announcements</div>
+            Owner composes offers, holiday notices, price changes, festival wishes. Audience: all customers / route / payment tier / agents. Channels: WhatsApp + SMS + push + email. <em>Owner → Engage → Announcements</em>
           </div>
           <div>
-            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>3. Customer has 10 order ways</div>
-            One-time, standing, scheduled, bulk, quick reorder, wallet prepaid, postpaid bill, COD, UPI prepaid, family group — replacing the old "subscription" word entirely.
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>⚠️ Complaints & quality</div>
+            Customer files quality issue with photo proof → owner sees → refund / replace / credit. Categories: quality, wrong item, damage, late, missed delivery, agent behavior. <em>Customer → My orders → Report a problem</em>
           </div>
           <div>
-            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>4. Delivery agent loop</div>
-            Live route progress, current stop card with delivered/failed buttons + auto photo proof, end-of-route cash reconciliation with "mark as deposited".
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>🗓️ Holiday & closures</div>
+            Owner marks shop closed dates (Diwali, weddings, maintenance). Customers auto-notified 24h before. Standing orders auto-skip. <em>Owner → Operations → Holiday & closures</em>
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>🔄 Agent leave & swap</div>
+            Agent requests leave → owner sees → picks best substitute (proximity + rating + availability). Route handover with one tap. <em>Owner → Operations → Agent leave & swap</em>
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>👨‍👩‍👧 Family linked accounts</div>
+            One bill, one wallet, multiple people. Husband/wife/parents place orders to the same account. <em>Customer → Account → Family members</em>
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>🚚 Delivery edge cases</div>
+            Customer not home / refused / wrong address / safety / vehicle issue — agent reports with photo, decides retry/reschedule/cancel. <em>Delivery → Operations → Report issue</em>
+          </div>
+          <div>
+            <div style={{fontWeight:700, color:'var(--ink)', marginBottom:4}}>🔔 Live announcements feed</div>
+            Customers see all owner announcements with offers, closures, price changes. Agents see their own feed (stock alerts, schedule changes). <em>Customer/Agent → Notifications</em>
           </div>
         </div>
       </div>
     </div>
   );
 };
- 
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
